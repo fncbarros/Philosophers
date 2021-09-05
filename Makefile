@@ -1,11 +1,11 @@
 NAME = philo
-SRC = src/main.c src/utils.c
+SRC = src/main.c src/utils.c src/thread.c
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 OBJ = $(SRC:c=o)
 
 %.o: %.c
-	$(CC) $(CFLAGS) -pthread -I inc/ -c $< -o $@
+	$(CC) -g $(CFLAGS) -pthread -I inc/ -c $< -o $@
 
 all: $(NAME)
 

@@ -21,26 +21,31 @@
 # include <limits.h>
 # include <stdbool.h>
 
-typedef struct s_params
-{/*
-    int number_of_philosophers; //nop
-    int time_to_die; //ttd
-    int time_to_eat; //tte
-    int time_to_sleep; //tts
-    int eat_time_num;  //         */ 
-}   t_params;
+// typedef pthread_mutex_t fork
+// typedef pthread_t        philo
 
+typedef struct s_params
+{
+    int             philo_num; //nop
+    int             dead_time; //ttd
+    int             meal_time; //tte
+    int             sleep_time; //tts
+    int             num_meals;  //
+    pthread_mutex_t fork; // == number of philosophers
+}   t_params;
 
 typedef struct  s_philo
 {
-    /* pthread_t    *N
-    char    state; //E(ating), S(leeping), T(hinking), D[ead]
-
-    */ 
-
+    int         N;
+    pthread_t   th;
+    char        state; //E[ating], S[leeping], T[hinking], D[ead]
+    t_params    *params;
 }   t_philo;
 
 /*utils.c*/
-int ft_atoi(const char *str);
+int     ft_atoi(const char *str);
+
+/*thread.c*/
+void	*ft_thread(void *philo);
 
 #endif
