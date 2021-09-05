@@ -1,3 +1,8 @@
+Log:    Need to get actual multithread going, only tested for one so far.
+        Need start prototype mutex implementation
+        Need to understand timming logic and application
+
+
                                     PTHREADS
 
 pthread_create(pthread data type by ref, attributes, function (pointer) by ref, arguments (void *))
