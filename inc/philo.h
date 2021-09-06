@@ -42,8 +42,7 @@ typedef struct s_params
 	int		sleep_time; //tts
 	int		num_meals;  //
 	t_fork	*fork; // need array of forks
-	t_tv	init_t;
-	//suseconds_t	init_time
+	suseconds_t	init_t;
 	// t_tv	curr_t;
 }   t_params;
 
