@@ -21,31 +21,46 @@
 # include <limits.h>
 # include <stdbool.h>
 
-// typedef pthread_mutex_t fork
-// typedef pthread_t        philo
+typedef pthread_mutex_t t_fork;
+typedef	struct timeval t_tv;
+
+
+#define USECS 100010
+
+#define BLACK "\033[0;30m"
+#define RED "\033[0;31m"
+#define YELLOW "\033[0;33m"
+#define BLUE "\033[0;34m"
+#define GREEN "\033[0;32m"
+#define CLR_DFT "\033[0m"
 
 typedef struct s_params
 {
-    int             philo_num; //nop
-    int             dead_time; //ttd
-    int             meal_time; //tte
-    int             sleep_time; //tts
-    int             num_meals;  //
-    pthread_mutex_t fork; // == number of philosophers
+	int		philo_num; //nop
+	int		dead_time; //ttd
+	int		meal_time; //tte
+	int		sleep_time; //tts
+	int		num_meals;  //
+	t_fork	*fork; // need array of forks
+	t_tv	init_t;
+	//suseconds_t	init_time
+	// t_tv	curr_t;
 }   t_params;
 
 typedef struct  s_philo
 {
-    int         N;
-    pthread_t   th;
-    char        state; //E[ating], S[leeping], T[hinking], D[ead]
-    t_params    *params;
+	int			N;
+	pthread_t	th;
+	char		state; //E[ating], S[leeping], T[hinking], D[ead]
+	t_params	*params;
 }   t_philo;
 
 /*utils.c*/
-int     ft_atoi(const char *str);
+int		ft_atoi(const char *str);
 
 /*thread.c*/
 void	*ft_thread(void *philo);
+
+/*err.c*/
 
 #endif

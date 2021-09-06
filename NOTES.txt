@@ -1,6 +1,18 @@
 Log:    Need to get actual multithread going, only tested for one so far.
         Need start prototype mutex implementation
         Need to understand timming logic and application
+        Error handling and printing to stderr
+        Considering allocating for an array of threads only but that requires identifying the thread calling the functions
+
+
+
+?:
+Queue for holding forks?
+Mutex prevents all exclusive threads to execute?
+Colors for readability?
+Timming with gettimeofday?
+Use for pthread_detach?
+
 
 
                                     PTHREADS
@@ -75,10 +87,3 @@ if (pthread_mutex_unlock(&mutex)) //
 if (pthread_mutex_destroy(&mutex)) //
     return (4);
 
-
-
-?:
-Queue for holding forks?
-Mutex prevents all exclusive threads to execute?
-Colors for readability?
-Timming with gettimeofday?
