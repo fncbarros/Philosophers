@@ -34,32 +34,49 @@ typedef	struct timeval t_tv;
 #define GREEN "\033[0;32m"
 #define CLR_DFT "\033[0m"
 
-typedef struct s_params
+typedef struct s_timings
 {
-	int		philo_num; //nop
 	int		dead_time; //ttd
 	int		meal_time; //tte
 	int		sleep_time; //tts
 	int		num_meals;  //
-	t_fork	*fork; // need array of forks
+}				t_timings;
+
+typedef struct s_params
+{
+	int		philo_num; //nop
+	t_timings timings;
+	bool	*fork; 
+	t_fork	*mutex; // need array of forks
 	suseconds_t	init_t;
 	// t_tv	curr_t;
 }   t_params;
 
+typedef enum	e_philo_state
+{
+	EATING,
+	SLEEPING,
+	THINKING,
+	DEAD
+}				t_philo_state;
+
 typedef struct  s_philo
 {
-	int			N;
-	pthread_t	th;
-	char		state; //E[ating], S[leeping], T[hinking], D[ead]
-	t_params	*params;
+	int				N;
+	pthread_t		th;
+	t_philo_state	state; //E[ating], S[leeping], T[hinking], D[ead]
+	t_params		*params; // dangerous
+	t_timings 		timings;
 }   t_philo;
 
 /*utils.c*/
+int		ft_isdigit(int c);
 int		ft_atoi(const char *str);
 
 /*thread.c*/
 void	*ft_thread(void *philo);
 
 /*err.c*/
+int	argcheck(int argc, char **argv);
 
 #endif

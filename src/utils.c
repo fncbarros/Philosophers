@@ -12,7 +12,7 @@
 
 # include "../inc/philo.h"
 
-static int	ft_isdigit(int c)
+int	ft_isdigit(int c)
 {
 	if (58 > c && 47 < c)
 		return (42);
