@@ -22,22 +22,22 @@
 void	ft_sleep(t_philo *p)
 /*passing whole struct or just status and TIMMING ?????????*/
 {
-	p->state = 'S';
+	p->state = SLEEPING;
 	printf(GREEN);
-	printf(/*%d Philosopher*/" %d is sleeping.\n", /*tv.tv_usec - p->params->init_t,*/ p->N);
+	printf(/*%d */"Philosopher %d is sleeping.\n", /*tv.tv_usec - p->params->init_t,*/ p->N);
 	usleep (USECS);
 }
 void	ft_eat(t_philo *p)
 {
 	p->state = EATING;
 	printf(BLUE);
-	printf(/*%d Philosopher*/" %d is eating.\n", /*tv.tv_usec - p->params->init_t,*/ p->N);
+	printf(/*%d */"Philosopher %d is eating.\n", /*tv.tv_usec - p->params->init_t,*/ p->N);
 	usleep (USECS);
 }
 void	ft_think(t_philo *p)
 {
-	p->state = 'T';
-	printf(/*%d Philosopher*/" %d is thinking.\n", /*tv.tv_usec - p->params->init_t,*/ p->N);
+	p->state = THINKING;
+	printf(/*%d */"Philosopher %d is thinking.\n", /*tv.tv_usec - p->params->init_t,*/ p->N);
 	usleep (USECS);
 }
 
@@ -52,12 +52,14 @@ void	*ft_thread(void *philo)
 	if (gettimeofday(&curr_time, NULL))
 		return (NULL);
 	p->params->init_t = curr_time.tv_usec;	
-	while (is_not_dead && !eaten_enough && nobody_died)
+	// while (is_not_dead && !eaten_enough && nobody_died)
+	while (1)
 	{
 		if (gettimeofday(&curr_time, NULL))
 			return (NULL);
-		if (is_dead)
-			continue ;
+		printf("%d ", curr_time.tv_usec - p->params->init_t);
+		// if (is_dead)
+		// 	continue ;
 		if (p->state == EATING)
 			ft_sleep(p);
 		if (p->state == SLEEPING)

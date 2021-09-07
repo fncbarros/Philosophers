@@ -32,19 +32,23 @@ int	init_structs(char **argv, t_philo **philo, t_params *params)
 	params->timings.meal_time = ft_atoi(argv[3]);
 	params->timings.sleep_time = ft_atoi(argv[4]);
 	params->timings.num_meals = ft_atoi(argv[5]);
-	if (!callcheck(&params->fork, sizeof(bool) * params->philo_num))
-		return (0);
-	if (!callcheck(&params->mutex, sizeof(t_fork) * params->philo_num))
-		return (0);
-	if (!callcheck(&philo, sizeof(t_philo) * params->philo_num))
-		return (0);
+
+	// if (!callcheck(&params->fork, sizeof(bool) * params->philo_num))
+	// 	return (0);
+	// if (!callcheck(&params->mutex, sizeof(t_fork) * params->philo_num))
+	// 	return (0);
+	// if (!callcheck(&philo, sizeof(t_philo) * params->philo_num))
+	// 	return (0);
 	
-	// *philo = (t_philo *)malloc((sizeof(t_philo) * params->philo_num)/* + 1*/);
-	// if (!philo)
-	// 	return (0);
-	// params->fork = (t_fork *)malloc(sizeof(t_fork) * params->philo_num);
-	// if (!params->fork)
-	// 	return (0);
+	*philo = malloc((sizeof(t_philo) * params->philo_num)/* + 1*/);
+	if (!philo)
+		return (0);
+	params->fork = malloc(sizeof(bool) * params->philo_num);
+	if (!params->fork)
+		return (0);
+	params->lock = malloc(sizeof(t_mutex) * params->philo_num);
+	if (!params->lock)
+		return (0);
 	return (1);
 }
 
@@ -59,10 +63,10 @@ int	main(int argc, char **argv)
 	i = -1;
 
 
-	(void)argc;
+	// (void)argc;
 	// early err checking
-	// if (!argcheck(argc, argv)) //not working
-	// 	return (1);
+	if (!argcheck(argc, argv)) //not working
+		return (1);
 	// initializing arguments
 	if (!init_structs(argv, &philo, &params))
 		return (2);
@@ -70,7 +74,7 @@ int	main(int argc, char **argv)
 	// creating mutexes
 	while (++i < params.philo_num)
 	{
-		if (pthread_mutex_init(&params.mutex[i], NULL))
+		if (pthread_mutex_init(&params.lock[i], NULL))
 			return (3);
 	}
 	//creating threads
@@ -99,6 +103,7 @@ int	main(int argc, char **argv)
 	// (philo + i) = NULL;
 
 	free(philo);
-	free (params.fork);
+	free(params.lock);
+	free(params.fork);
 	return (0);
 }

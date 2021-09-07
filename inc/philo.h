@@ -21,7 +21,7 @@
 # include <limits.h>
 # include <stdbool.h>
 
-typedef pthread_mutex_t t_fork;
+typedef pthread_mutex_t t_mutex;
 typedef	struct timeval t_tv;
 
 
@@ -47,7 +47,7 @@ typedef struct s_params
 	int		philo_num; //nop
 	t_timings timings;
 	bool	*fork; 
-	t_fork	*mutex; // need array of forks
+	t_mutex	*lock; // need array of forks
 	suseconds_t	init_t;
 	// t_tv	curr_t;
 }   t_params;
