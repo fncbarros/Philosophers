@@ -34,6 +34,9 @@ typedef	struct timeval t_tv;
 #define GREEN "\033[0;32m"
 #define CLR_DFT "\033[0m"
 
+// QUEUE for waiting time <-------------
+
+/*arguments (excepting 1st)*/
 typedef struct s_timings
 {
 	int		dead_time; //ttd
@@ -42,14 +45,25 @@ typedef struct s_timings
 	int		num_meals;  //
 }				t_timings;
 
+typedef struct s_fork
+{
+	bool		fork;
+	t_mutex		lock;
+}	t_fork;
+
+
+/*parameters external to t_philo (sorta);
+  arg 1
+  timings
+  forks and mutexes [array]
+  initial time
+  */
 typedef struct s_params
 {
-	int		philo_num; //nop
-	t_timings timings;
-	bool	*fork; 
-	t_mutex	*lock; // need array of forks
+	int			philo_num;
+	t_timings 	timings;
+	t_fork		*mutex;
 	suseconds_t	init_t;
-	// t_tv	curr_t;
 }   t_params;
 
 typedef enum	e_philo_state
@@ -64,9 +78,11 @@ typedef struct  s_philo
 {
 	int				N;
 	pthread_t		th;
-	t_philo_state	state; //E[ating], S[leeping], T[hinking], D[ead]
-	t_params		*params; // dangerous
+	t_philo_state	state;
+	t_params		*params; // maybe not use this and pass struct holding both t_pilo and s_params ??? No
 	t_timings 		timings;
+	bool			*r_fork;	// N0 can take fork 0 and 1, N1 can take 1 and 2 ... Nphil_num can take fork phil_num and 0 (r_fork being equivalent to corresponding N)
+	bool			*l_fork;
 }   t_philo;
 
 /*utils.c*/

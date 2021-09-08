@@ -12,12 +12,15 @@
 
 #include "../inc/philo.h"
 
-/*function for each action (eating, sleeping, thinking
+/*	One master function pointed to by param used in pthread_create
+	calling other functions depending on philo state
+	function for each action (eating, sleeping, thinking
 	called by thread function
 	each printing action and philosopher ID
 	then calling back ft_thread and ultimately running in a loop
 	time keeping tho ??????????????
 	Colors according to action or philosopher?*/
+
 
 void	ft_sleep(t_philo *p)
 /*passing whole struct or just status and TIMMING ?????????*/
@@ -25,20 +28,20 @@ void	ft_sleep(t_philo *p)
 	p->state = SLEEPING;
 	printf(GREEN);
 	printf(/*%d */"Philosopher %d is sleeping.\n", /*tv.tv_usec - p->params->init_t,*/ p->N);
-	usleep (USECS);
+//	usleep (sleep_time);
 }
 void	ft_eat(t_philo *p)
 {
 	p->state = EATING;
 	printf(BLUE);
 	printf(/*%d */"Philosopher %d is eating.\n", /*tv.tv_usec - p->params->init_t,*/ p->N);
-	usleep (USECS);
+	// usleep (meal_time);
 }
 void	ft_think(t_philo *p)
 {
 	p->state = THINKING;
 	printf(/*%d */"Philosopher %d is thinking.\n", /*tv.tv_usec - p->params->init_t,*/ p->N);
-	usleep (USECS);
+	// usleep ();
 }
 
 void	*ft_thread(void *philo)
@@ -48,17 +51,16 @@ void	*ft_thread(void *philo)
 
 	p = (t_philo *)philo;
 	printf(CLR_DFT);
-	
 	if (gettimeofday(&curr_time, NULL))
 		return (NULL);
 	p->params->init_t = curr_time.tv_usec;	
-	// while (is_not_dead && !eaten_enough && nobody_died)
+	// while (is_not_dead && !eaten_enough && nobody_died) // check state, num_meals (if any is given), ??check state of others(can't)
 	while (1)
 	{
 		if (gettimeofday(&curr_time, NULL))
 			return (NULL);
 		printf("%d ", curr_time.tv_usec - p->params->init_t);
-		// if (is_dead)
+		// if (is_dead) //time_to_die
 		// 	continue ;
 		if (p->state == EATING)
 			ft_sleep(p);

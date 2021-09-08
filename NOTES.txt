@@ -1,17 +1,26 @@
-Log:    Need to get actual multithread going, only tested for one so far.
-        Need start prototype mutex implementation
-        Need to understand timming logic and application
+Log:    More data to init (forks and parameters)
+        Need to understand timming logic and application (curr_time)
+        Test for 3
         Error handling and printing to stderr
         Considering allocating for an array of threads only but that requires identifying the thread calling the functions
+        Priority for taking fork given to thread with the biggest wait time and is not sleeping
+        Compile with -fsanitize=thread for checking wrong behaviour
 
+    forks:
+        // bool	*r_fork;	// N0 can take fork 0 and 1, N1 can take 1 and 2 ... Nphil_num can take fork phil_num and 0 (r_fork being equivalent to corresponding N)
+	    // bool	*l_fork;
+    How to attribute them: (init ft)
+        while (i < philo_num - 1)
+            philo[i]->r_fork = params->(.)fork[i]; philo[i]l_fork = params->(.)fork[i + 1];
+        philo[i]->l_fork = params->(.)fork[i]; philo[i]->l_fork = params->(.)fork[0];
 
 
 ?:
-Queue for holding forks?
-Mutex prevents all exclusive threads to execute?
-Colors for readability?
 Timming with gettimeofday?
 Use for pthread_detach?
+Queue for holding forks? 
+Any use for return value of thread (2nd param of pthread_join)?
+Mutex prevents all exclusive threads to execute? No!
 
 
 
