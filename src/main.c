@@ -22,33 +22,39 @@ int	callcheck(void *ptr, size_t size)
 	return (1);
 }
 
-int	init_structs(char **argv, t_philo **philo, t_params *params)
-/*l.39-43: initializing arguments
+int	init_structs(char **argv, t_philo **philo, t_params *params, int i)
+/* change to t_philo	*init_structs(char **argv, t_params *params, int i) <---------------------------[CHANGE!!!!]
+
+
+
+	UPDATE LINE NUMS
+	l.39-43: initializing arguments
   l.44-45: allocating memory for arrays
   l.50: copying value of t_timings(args) to each philosopher struct(presumably)
   l.51-55: Attributing each philosopher a fork throught pointers (rightmost fork being 0 and leftmost being philo_num - 1)
   */
 {
-	int	i;
-
-	i = -1;
 	params->philo_num = ft_atoi(argv[1]);
 	params->timings.dead_time = ft_atoi(argv[2]);
 	params->timings.meal_time = ft_atoi(argv[3]);
 	params->timings.sleep_time = ft_atoi(argv[4]);
-	params->timings.num_meals = ft_atoi(argv[5]);	
-	*philo = malloc((sizeof(t_philo) * params->philo_num)/* + 1*/);
+	if (argv[5])
+		params->timings.num_meals = ft_atoi(argv[5]);
+	else
+		params->timings.num_meals = -1;	
+	*philo = malloc((sizeof(t_philo) * params->philo_num ));
 	params->mutex = malloc(sizeof(t_fork) * params->philo_num);
 	if (!philo || !params->mutex)
 		return (0);
-	while (++i < params->philo_num - 1)
+	while (++i < params->philo_num)
 	{
-		(*philo)->timings = params->timings;
-		(*philo)->r_fork = &params->mutex[i].fork;
-		(*philo)->l_fork = &params->mutex[i + 1].fork;
+		philo[i]->N = i + 1;
+		philo[i]->params = params;
+		philo[i]->timings = params->timings;
+		philo[i]->r_fork = &params->mutex[i].fork;
+		philo[i]->l_fork = &params->mutex[i + 1].fork;
 	}
-	(*philo)->r_fork = &params->mutex[i].fork;
-	(*philo)->l_fork = &params->mutex[0].fork;
+	philo[i - 1]->l_fork = &params->mutex[0].fork;
 	return (1);
 }
 
@@ -70,7 +76,7 @@ int	main(int argc, char **argv)
 	if (!argcheck(argc, argv)) //not working
 		return (1);
 	// initializing arguments
-	if (!init_structs(argv, &philo, &params))
+	if (!init_structs(argv, &philo, &params, i)) // passing 5th arg or not, i for saving lines
 		return (2);
 
 
@@ -85,12 +91,7 @@ int	main(int argc, char **argv)
 	i = -1;
 	while (++i < params.philo_num)
 	{
-		philo[i].N = i + 1;
-
-		/*test*/
-		philo[i].state = THINKING;
-		/*test*/
-
+		philo->state = THINKING;
 		// philo[i].params = &params;
 		if (pthread_create(&philo[i].th, NULL, &ft_thread, &philo[i]))
 			return (4);

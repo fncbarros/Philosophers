@@ -43,6 +43,7 @@ typedef struct s_timings
 	int		meal_time; //tte
 	int		sleep_time; //tts
 	int		num_meals;  //
+	suseconds_t	init_t;
 }				t_timings;
 
 typedef struct s_fork
@@ -63,14 +64,14 @@ typedef struct s_params
 	int			philo_num;
 	t_timings 	timings;
 	t_fork		*mutex;
-	suseconds_t	init_t;
+	// suseconds_t	init_t;
 }   t_params;
 
 typedef enum	e_philo_state
 {
+	THINKING,
 	EATING,
 	SLEEPING,
-	THINKING,
 	DEAD
 }				t_philo_state;
 
