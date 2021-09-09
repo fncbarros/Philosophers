@@ -1,4 +1,5 @@
-Log:    
+Log:    Apply mutexes
+        Count dead time
         time still wrong I believe (1000000)
         Test for 3
         Error handling and printing to stderr
@@ -8,7 +9,8 @@ Log:
         time_to_die set to zero every time a philosopher finishes eating
 
 ?:
-Timming with gettimeofday?
+Mutexes protect forks, get si
+Timming with gettimeofday? Dun (somewhat)
 Use for pthread_detach?
 Queue for holding forks? 
 Any use for return value of thread (2nd param of pthread_join)?
