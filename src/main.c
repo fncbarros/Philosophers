@@ -15,17 +15,15 @@
 int	callcheck(void *ptr, size_t size)
 /*calloc's and err checks(...to save a line[...would save 2 if I could use exit().....])
   NOT IN USE ATM*/
-{ 
+{
 	ptr = calloc(1, size + 1); // '+1'..?
 	if (!ptr)
 		return (0);
 	return (1);
 }
 
-int	init_structs(char **argv, t_philo **philo, t_params *params, int i)
-/* change to t_philo	*init_structs(char **argv, t_params *params, int i) <---------------------------[CHANGE!!!!]
-
-
+/*int*/t_philo	*init_structs(char **argv,/*t_philo **philo,*/ t_params *params, int i)
+/* <--------------------[TOO MANY LINES!!!]
 
 	UPDATE LINE NUMS
 	l.39-43: initializing arguments
@@ -34,6 +32,8 @@ int	init_structs(char **argv, t_philo **philo, t_params *params, int i)
   l.51-55: Attributing each philosopher a fork throught pointers (rightmost fork being 0 and leftmost being philo_num - 1)
   */
 {
+	t_philo	*p;
+
 	params->philo_num = ft_atoi(argv[1]);
 	params->timings.dead_time = ft_atoi(argv[2]);
 	params->timings.meal_time = ft_atoi(argv[3]);
@@ -41,21 +41,20 @@ int	init_structs(char **argv, t_philo **philo, t_params *params, int i)
 	if (argv[5])
 		params->timings.num_meals = ft_atoi(argv[5]);
 	else
-		params->timings.num_meals = -1;	
-	*philo = malloc((sizeof(t_philo) * params->philo_num ));
+		params->timings.num_meals = -1;
+	p = malloc((sizeof(t_philo) * params->philo_num ));
 	params->mutex = malloc(sizeof(t_fork) * params->philo_num);
-	if (!philo || !params->mutex)
+	if (!p || !params->mutex)
 		return (0);
 	while (++i < params->philo_num)
 	{
-		philo[i]->N = i + 1;
-		philo[i]->params = params;
-		philo[i]->timings = params->timings;
-		philo[i]->r_fork = &params->mutex[i].fork;
-		philo[i]->l_fork = &params->mutex[i + 1].fork;
+		p[i].N = i + 1;
+		p[i].timings = params->timings;
+		p[i].r_fork = &params->mutex[i].fork;
+		p[i].l_fork = &params->mutex[i + 1].fork;
 	}
-	philo[i - 1]->l_fork = &params->mutex[0].fork;
-	return (1);
+	p[i - 1].l_fork = &params->mutex[0].fork;
+	return (p);
 }
 
 int	main(int argc, char **argv)
@@ -76,8 +75,11 @@ int	main(int argc, char **argv)
 	if (!argcheck(argc, argv)) //not working
 		return (1);
 	// initializing arguments
-	if (!init_structs(argv, &philo, &params, i)) // passing 5th arg or not, i for saving lines
+	philo = init_structs(argv, &params, i);
+	if (!philo)
 		return (2);
+	// if (!init_structs(argv, &philo, &params, i)) // passing 5th arg or not, i for saving lines
+	// 	return (2);
 
 
 
@@ -111,6 +113,6 @@ int	main(int argc, char **argv)
 		pthread_mutex_destroy(&params.mutex[i].lock);
 	free(philo);
 	free(params.mutex);
-	
+
 	return (0);
 }
