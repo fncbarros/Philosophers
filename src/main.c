@@ -12,28 +12,12 @@
 
 #include "../inc/philo.h"
 
-int	callcheck(void *ptr, size_t size)
-/*calloc's and err checks(...to save a line[...would save 2 if I could use exit().....])
-  NOT IN USE ATM*/
+t_philo	*init_structs(char **argv, t_params *params, int i)
+/*	UPDATE LINE NUMS <------------------------------- TOO MANY LINES!!!!!!!!*/
 {
-	ptr = calloc(1, size + 1); // '+1'..?
-	if (!ptr)
-		return (0);
-	return (1);
-}
+	t_philo	*p; //return value
 
-/*int*/t_philo	*init_structs(char **argv,/*t_philo **philo,*/ t_params *params, int i)
-/* <--------------------[TOO MANY LINES!!!]
-
-	UPDATE LINE NUMS
-	l.39-43: initializing arguments
-  l.44-45: allocating memory for arrays
-  l.50: copying value of t_timings(args) to each philosopher struct(presumably)
-  l.51-55: Attributing each philosopher a fork throught pointers (rightmost fork being 0 and leftmost being philo_num - 1)
-  */
-{
-	t_philo	*p;
-
+	// initializing w/ arg values
 	params->philo_num = ft_atoi(argv[1]);
 	params->timings.dead_time = ft_atoi(argv[2]);
 	params->timings.meal_time = ft_atoi(argv[3]);
@@ -42,18 +26,28 @@ int	callcheck(void *ptr, size_t size)
 		params->timings.num_meals = ft_atoi(argv[5]);
 	else
 		params->timings.num_meals = -1;
-	p = malloc((sizeof(t_philo) * params->philo_num ));
-	params->mutex = malloc(sizeof(t_fork) * params->philo_num);
-	if (!p || !params->mutex)
-		return (0);
+	
+	// allocating memory for array of philosophers and t_mutex structs aka forks and checking for success
+	p = calloc(params->philo_num, sizeof(t_philo));
+	if (!p)
+		return (NULL);
+	params->fork = calloc(params->philo_num, sizeof(t_fork));
+	if (!params->fork)
+	{
+		free(p);
+		return (NULL);
+	}
+
+	// initializing philosophers infos
 	while (++i < params->philo_num)
 	{
 		p[i].N = i + 1;
+		params->fork[i].is_taken = 0;
 		p[i].timings = params->timings;
-		p[i].r_fork = &params->mutex[i].fork;
-		p[i].l_fork = &params->mutex[i + 1].fork;
+		p[i].r_fork = &params->fork[i];
+		p[i].l_fork = &params->fork[i + 1];
 	}
-	p[i - 1].l_fork = &params->mutex[0].fork;
+	p[i - 1].l_fork = &params->fork[0];
 	return (p);
 }
 
@@ -61,32 +55,27 @@ int	main(int argc, char **argv)
 /*Initialize array of t_philo struct
   Initialize t_params struct*/
 {
-	t_philo		*philo;
+	t_philo		*philo; // unnecessary if params points to a philo struct already
 	t_params	params;
 	int			i;
 
-
 	philo = NULL;
 	i = -1;
-
-
 
 	// early err checking
 	if (!argcheck(argc, argv)) //not working
 		return (1);
 	// initializing arguments
-	philo = init_structs(argv, &params, i);
+	philo = init_structs(argv, &params, i); // i for saving lines
 	if (!philo)
 		return (2);
-	// if (!init_structs(argv, &philo, &params, i)) // passing 5th arg or not, i for saving lines
-	// 	return (2);
 
 
 
 	// creating mutexes
 	while (++i < params.philo_num)
 	{
-		if (pthread_mutex_init(&params.mutex[i].lock, NULL))
+		if (pthread_mutex_init(&params.fork[i].lock, NULL))
 			return (3);
 	}
 	//creating threads
@@ -94,10 +83,12 @@ int	main(int argc, char **argv)
 	while (++i < params.philo_num)
 	{
 		philo->state = THINKING;
-		// philo[i].params = &params;
 		if (pthread_create(&philo[i].th, NULL, &ft_thread, &philo[i]))
 			return (4);
 	}
+
+	/*3rd loop to keep main thread going in the background so struct params can manage queue and stuff??? (thread_detach)*/
+
 	i = -1;
 	while (++i < params.philo_num)
 	{
@@ -110,9 +101,9 @@ int	main(int argc, char **argv)
 	// releasing data and memory
 	i = -1;
 	while (++i < params.philo_num)
-		pthread_mutex_destroy(&params.mutex[i].lock);
+		pthread_mutex_destroy(&params.fork[i].lock);
 	free(philo);
-	free(params.mutex);
-
+	free(params.fork);
+	
 	return (0);
 }

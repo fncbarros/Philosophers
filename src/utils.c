@@ -50,3 +50,11 @@ int	ft_atoi(const char *str) //LINES!!!!!<---------------------------------[!]
 	}
 	return (0);
 }
+
+/*int	callcheck(void *ptr, size_t size) // Experimental...
+{ 
+	ptr = calloc(1, size + 1); // '+1'..?
+	if (!ptr)
+		return (0);
+	return (1);
+}*/

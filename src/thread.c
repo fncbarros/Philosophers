@@ -25,56 +25,58 @@
 void	ft_sleep(t_philo *p)
 /*passing whole struct or just status and TIMMING ?????????*/
 {
-	p->state = SLEEPING;
 	printf(GREEN);
-	printf(/*%d */"Philosopher %d is sleeping.\n", /*tv.tv_usec - p->params->init_t,*/ p->N);
-	usleep (USECS);
-//	usleep (sleep_time);
+	printf("%ld Philosopher %d is sleeping.\n", elaps_time(p->timings.init_t), p->N);
+	printf("%ld Philosopher %d is sleeping.\n", elaps_time(p->timings.init_t), p->N);
+	p->state = SLEEPING;
+	usleep (p->timings.sleep_time);
 }
 void	ft_eat(t_philo *p)
 {
-	p->state = EATING;
 	printf(BLUE);
-	printf(/*%d */"Philosopher %d is eating.\n", /*tv.tv_usec - p->params->init_t,*/ p->N);
-	usleep (USECS);
-	// usleep (meal_time);
+	printf("%ld Philosopher %d is sleeping.\n", elaps_time(p->timings.init_t), p->N);
+	p->state = EATING;
+	usleep (p->timings.meal_time);
 }
 void	ft_think(t_philo *p)
 {
+	printf("%ld Philosopher %d is sleeping.\n", elaps_time(p->timings.init_t), p->N);
 	p->state = THINKING;
-	printf(/*%d */"Philosopher %d is thinking.\n", /*tv.tv_usec - p->params->init_t,*/ p->N);
-	usleep (USECS);
-	// usleep ();
+	// time left ft ????????
 }
 
 void	*ft_thread(void *philo)
 {
 	t_philo	*p;
-	t_tv	curr_time;
+	// long	curr_time;
+
 
 	p = (t_philo *)philo;
-	printf(CLR_DFT);
-	if (gettimeofday(&curr_time, NULL))
-		return (NULL);
-	p->timings.init_t = curr_time.tv_usec;
+	p->timings.init_t = ft_gettime(); //or initialize both initial and current here???? <---------------[!]
+	if (p->timings.init_t < 0)
+		return (NULL);	// err handling ??? <-----------------------------------------------------------{!}
 
 	// while (is_not_dead && !eaten_enough && nobody_died) // check state, num_meals (if any is given), ??check state of others(can't)
 	while (1)
-	{
-		if (gettimeofday(&curr_time, NULL))
-			return (NULL);
-		
+	{	
 		/*debugging*/
-		printf("%d - %d = %d ", curr_time.tv_usec, p->timings.init_t, curr_time.tv_usec - p->timings.init_t);
+		// printf("%d - %d = %d ", curr_time.tv_usec, p->timings.init_t, curr_time.tv_usec - p->timings.init_t);
 		/*debugging*/
 
+		/*testing*/
+		// curr_time = elaps_time(p->timings.init_t); // pass to functions
+		// if (!curr_time)
+		// 	return (NULL);
+		/*testing*/
+
+		printf(CLR_DFT);
 		// if (is_dead) //time_to_die
 		// 	continue ;
 		if (p->state == EATING)
 			ft_sleep(p);
-		if (p->state == SLEEPING)
+		else if (p->state == SLEEPING)
 			ft_think(p);
-		if (p->state == THINKING)
+		else if (p->state == THINKING)
 			ft_eat(p);
 	}
 	return (NULL);

@@ -1,13 +1,37 @@
-Log:    More data to init (forks and parameters)
-        Need to understand timming logic and application (curr_time)
+Log:    
+        time still wrong I believe (1000000)
         Test for 3
         Error handling and printing to stderr
-        Considering allocating for an array of threads only but that requires identifying the thread calling the functions
         Priority for taking fork given to thread with the biggest wait time and is not sleeping
+        Considering allocating for an array of threads only but that requires identifying the thread calling the functions
         Compile with -fsanitize=thread for checking wrong behaviour
-        uint64_t    ft_time() <------------------ft proto for getting timestamps
-            gettimeofday
-            return time.tv_sec * 1000 + time.tv_usec / 1000
+        time_to_die set to zero every time a philosopher finishes eating
+
+?:
+Timming with gettimeofday?
+Use for pthread_detach?
+Queue for holding forks? 
+Any use for return value of thread (2nd param of pthread_join)?
+Mutex prevents all exclusive threads to execute? No!
+What data do I need to pass to threaded function? mutex/fork, timings, philo num(id), state, ...?
+Error handling in threaded function? (3rd loop in main)
+
+                            ---------TIME---------
+        (long)
+        uint64_t    ft_time(void)
+            gettimeofday;
+            return time.tv_sec * 1000 + time.tv_usec / 1000;
+
+        long seconds = (end.tv_sec - start.tv_sec);
+        long micros = ((seconds * 1000000) + end.tv_usec) - (start.tv_usec);
+        printf("The elapsed time is %d seconds and %d micros\n", seconds, micros);
+
+        printf("Time taken to count to 10^5 is : %ld micro seconds\n",
+        ((end.tv_sec * 1000000 + end.tv_usec) -
+        (start.tv_sec * 1000000 + start.tv_usec)));
+
+        A bit confused...
+                            ---------TIME---------
 
     forks:
         // bool	*r_fork;	// N0 can take fork 0 and 1, N1 can take 1 and 2 ... Nphil_num can take fork phil_num and 0 (r_fork being equivalent to corresponding N)
@@ -18,12 +42,6 @@ Log:    More data to init (forks and parameters)
         philo[i]->l_fork = params->(.)fork[i]; philo[i]->l_fork = params->(.)fork[0];
 
 
-?:
-Timming with gettimeofday?
-Use for pthread_detach?
-Queue for holding forks? 
-Any use for return value of thread (2nd param of pthread_join)?
-Mutex prevents all exclusive threads to execute? No!
 
 
 

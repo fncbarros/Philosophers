@@ -20,6 +20,7 @@
 # include <unistd.h>
 # include <limits.h>
 # include <stdbool.h>
+# include <stdint.h>
 
 typedef pthread_mutex_t t_mutex;
 typedef	struct timeval t_tv;
@@ -40,16 +41,16 @@ typedef	struct timeval t_tv;
   + initial time*/
 typedef struct s_timings
 {
-	int		dead_time; //ttd
-	int		meal_time; //tte
-	int		sleep_time; //tts
-	int		num_meals;  //
-	suseconds_t	init_t;
+	int			dead_time; //ttd
+	int			meal_time; //tte
+	int			sleep_time; //tts
+	int			num_meals;  //
+	suseconds_t	init_t; //long or uint64_t
 }				t_timings;
 
 typedef struct s_fork
 {
-	bool		fork;
+	bool		is_taken;
 	t_mutex		lock;
 }	t_fork;
 
@@ -68,8 +69,8 @@ typedef struct  s_philo
 	t_philo_state	state;
 	// t_params		*params; // maybe not use this and pass struct holding both t_pilo and s_params ??? No
 	t_timings 		timings;
-	bool			*r_fork;	// N0 can take fork 0 and 1, N1 can take 1 and 2 ... Nphil_num can take fork phil_num and 0 (r_fork being equivalent to corresponding N)
-	bool			*l_fork;
+	t_fork			*r_fork;	// N0 can take fork 0 and 1, N1 can take 1 and 2 ... Nphil_num can take fork phil_num and 0 (r_fork being equivalent to corresponding N)
+	t_fork			*l_fork;	// or t_fork *ptrs <------------------[!!!!!!]
 }	t_philo;
 
 /*parameters external to t_philo (sorta);
@@ -80,19 +81,23 @@ typedef struct  s_philo
 typedef struct s_params
 {
 	int			philo_num;
-	t_timings 	timings;
-	t_fork		*mutex;
-	t_philo		**p;
+	t_timings 	timings; // ??
+	t_fork		*fork;
+	// t_philo		**p; // ??
 }	t_params;
 
 /*utils.c*/
 int		ft_isdigit(int c);
 int		ft_atoi(const char *str);
+long	ft_gettime(void);
 
 /*thread.c*/
 void	*ft_thread(void *philo);
 
 /*err.c*/
 int	argcheck(int argc, char **argv);
+
+/*time.c*/
+long	elaps_time(long init_time);
 
 #endif
