@@ -32,11 +32,25 @@ void	ft_sleep(t_philo *p)
 	usleep (p->timings.sleep_time);
 }
 void	ft_eat(t_philo *p)
+/*err handling ??
+  needs releas r_fork if l_fork unnavailable (queue) */
 {
+	while (!p->l_fork->is_taken || !p->r_fork->is_taken) // but not quite cuz priorities
+	{
+		if (!try_get_fork(p->r_fork))
+			continue ;
+		if (!try_get_fork(p->l_fork))
+			release_fork(p->r_fork);
+	}
 	printf(BLUE);
 	printf("%ld Philosopher %d is sleeping.\n", elaps_time(p->timings.init_t), p->N);
 	p->state = EATING;
 	usleep (p->timings.meal_time);
+
+	p->r_fork->is_taken = 0;
+	p->l_fork->is_taken = 0;
+	pthread_mutex_unlock(&p->r_fork->lock);
+	pthread_mutex_unlock(&p->l_fork->lock);
 }
 void	ft_think(t_philo *p)
 {
@@ -59,12 +73,9 @@ void	*ft_thread(void *philo)
 	// while (is_not_dead && !eaten_enough && nobody_died) // check state, num_meals (if any is given), ??check state of others(can't)
 	while (1)
 	{	
-		/*debugging*/
-		// printf("%d - %d = %d ", curr_time.tv_usec, p->timings.init_t, curr_time.tv_usec - p->timings.init_t);
-		/*debugging*/
 
 		/*testing*/
-		// curr_time = elaps_time(p->timings.init_t); // pass to functions
+		// curr_time = elaps_time(p->timings.init_t); // so I can check for NULL ret; pass to functions
 		// if (!curr_time)
 		// 	return (NULL);
 		/*testing*/
@@ -77,7 +88,10 @@ void	*ft_thread(void *philo)
 		else if (p->state == SLEEPING)
 			ft_think(p);
 		else if (p->state == THINKING)
+		{
+			// try_get_forks();
 			ft_eat(p);
+		}
 	}
 	return (NULL);
 }

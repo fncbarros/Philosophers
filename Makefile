@@ -1,5 +1,5 @@
 NAME = philo
-SRC = src/main.c src/utils.c src/thread.c src/time.c src/err.c
+SRC = src/main.c src/utils.c src/thread.c src/time.c src/err.c src/thread_utils.c
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror 
 OBJ = $(SRC:c=o)

@@ -94,6 +94,9 @@ long	ft_gettime(void);
 /*thread.c*/
 void	*ft_thread(void *philo);
 
+/*thread_utils.c*/
+void	try_get_fork(t_fork *fork); // void for now
+
 /*err.c*/
 int	argcheck(int argc, char **argv);
 
