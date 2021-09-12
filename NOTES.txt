@@ -7,6 +7,8 @@ Log:    Apply mutexes
         Considering allocating for an array of threads only but that requires identifying the thread calling the functions
         Compile with -fsanitize=thread for checking wrong behaviour
         time_to_die set to zero every time a philosopher finishes eating
+        if (2 * time_to_eat > curr_time - last_meal)
+            no lock
 
 ?:
 Mutexes protect forks, get si

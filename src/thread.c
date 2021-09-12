@@ -27,7 +27,6 @@ void	ft_sleep(t_philo *p)
 {
 	printf(GREEN);
 	printf("%ld Philosopher %d is sleeping.\n", elaps_time(p->timings.init_t), p->N);
-	printf("%ld Philosopher %d is sleeping.\n", elaps_time(p->timings.init_t), p->N);
 	p->state = SLEEPING;
 	usleep (p->timings.sleep_time);
 }
@@ -43,7 +42,7 @@ void	ft_eat(t_philo *p)
 			release_fork(p->r_fork);
 	}
 	printf(BLUE);
-	printf("%ld Philosopher %d is sleeping.\n", elaps_time(p->timings.init_t), p->N);
+	printf("%ld Philosopher %d is eating.\n", elaps_time(p->timings.init_t), p->N);
 	p->state = EATING;
 	usleep (p->timings.meal_time);
 
@@ -54,7 +53,7 @@ void	ft_eat(t_philo *p)
 }
 void	ft_think(t_philo *p)
 {
-	printf("%ld Philosopher %d is sleeping.\n", elaps_time(p->timings.init_t), p->N);
+	printf("%ld Philosopher %d is thinking.\n", elaps_time(p->timings.init_t), p->N);
 	p->state = THINKING;
 	// time left ft ????????
 }

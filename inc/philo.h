@@ -95,10 +95,11 @@ long	ft_gettime(void);
 void	*ft_thread(void *philo);
 
 /*thread_utils.c*/
-void	try_get_fork(t_fork *fork); // void for now
+int		try_get_fork(t_fork *fork); // void for now
+int		release_fork(t_fork *fork);
 
 /*err.c*/
-int	argcheck(int argc, char **argv);
+int		argcheck(int argc, char **argv);
 
 /*time.c*/
 long	elaps_time(long init_time);
