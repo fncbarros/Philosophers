@@ -1,7 +1,7 @@
-Log:    "if a philosopher doesn’t start eating ’time_to_die’ milliseconds after starting his last meal or the beginning of the simulation, it dies"
+Log:    time still wrong I believe (1000000?); printing negatives FIXIT!!!!<--------------------
+        "if a philosopher doesn’t start eating ’time_to_die’ milliseconds after starting his last meal or the beginning of the simulation, it dies"
         time_to_die set to zero every time a philosopher finishes eating ?
         Count dead time
-        time still wrong I believe (1000000?)
         1 philosopher case (2 forks)
         Priority for taking fork given to thread with the biggest wait time and is not sleeping
         Test for 3
