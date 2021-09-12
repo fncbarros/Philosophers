@@ -1,18 +1,17 @@
-Log:    Apply mutexes
+Log:    "if a philosopher doesn’t start eating ’time_to_die’ milliseconds after starting his last meal or the beginning of the simulation, it dies"
+        time_to_die set to zero every time a philosopher finishes eating ?
         Count dead time
-        time still wrong I believe (1000000)
+        time still wrong I believe (1000000?)
+        1 philosopher case (2 forks)
+        Priority for taking fork given to thread with the biggest wait time and is not sleeping
         Test for 3
         Error handling and printing to stderr
-        Priority for taking fork given to thread with the biggest wait time and is not sleeping
-        Considering allocating for an array of threads only but that requires identifying the thread calling the functions
-        Compile with -fsanitize=thread for checking wrong behaviour
-        time_to_die set to zero every time a philosopher finishes eating
         if (2 * time_to_eat > curr_time - last_meal)
             no lock
 
 ?:
-Mutexes protect forks, get si
-Timming with gettimeofday? Dun (somewhat)
+Mutexes protect forks, get sign
+Timming with gettimeofday? Dun (is it tho?)
 Use for pthread_detach?
 Queue for holding forks? 
 Any use for return value of thread (2nd param of pthread_join)?
