@@ -45,7 +45,7 @@ typedef struct s_timings
 	int			meal_time; //tte
 	int			sleep_time; //tts
 	int			num_meals;  //
-	suseconds_t	init_t; //long or uint64_t
+	long		init_t; //long or uint64_t
 }				t_timings;
 
 typedef struct s_fork
