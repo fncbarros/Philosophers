@@ -19,3 +19,16 @@ int	release_fork(t_fork *fork)
 	fork->is_taken = 0;
 	return (1);
 }
+
+int	not_dead(t_philo *p)
+{
+	if ((long)p->timings.dead_time > elaps_time(p->last_meal))
+		return (1);
+	else
+	{
+		printf("Philosopher %d has died\n", p->N);
+		p->state = DEAD;
+		exit (1); // REMOVE <--------------------------------[!]
+		return (0);
+	}
+}

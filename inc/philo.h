@@ -67,7 +67,7 @@ typedef struct  s_philo
 	int				N;
 	pthread_t		th;
 	t_philo_state	state;
-	// t_params		*params; // maybe not use this and pass struct holding both t_pilo and s_params ??? No
+	long			last_meal;
 	t_timings 		timings;
 	t_fork			*r_fork;	// N0 can take fork 0 and 1, N1 can take 1 and 2 ... Nphil_num can take fork phil_num and 0 (r_fork being equivalent to corresponding N)
 	t_fork			*l_fork;	// or t_fork *ptrs <------------------[!!!!!!]
@@ -90,6 +90,7 @@ typedef struct s_params
 int		ft_isdigit(int c);
 int		ft_atoi(const char *str);
 long	ft_gettime(void);
+int		nobody_died(t_philo *p, int N);
 
 /*thread.c*/
 void	*ft_thread(void *philo);
@@ -97,6 +98,8 @@ void	*ft_thread(void *philo);
 /*thread_utils.c*/
 int		try_get_fork(t_fork *fork); // void for now
 int		release_fork(t_fork *fork);
+int		not_dead(t_philo *p);
+
 
 /*err.c*/
 int		argcheck(int argc, char **argv);

@@ -34,7 +34,7 @@ void	ft_eat(t_philo *p)
 /*err handling ??
   needs releas r_fork if l_fork unnavailable (queue) */
 {
-	while (!p->l_fork->is_taken || !p->r_fork->is_taken) // but not quite cuz priorities
+	while (!p->l_fork->is_taken || !p->r_fork->is_taken) // waitting to eat; but not quite cuz priorities
 	{
 		if (!try_get_fork(p->r_fork))
 			continue ;
@@ -43,6 +43,7 @@ void	ft_eat(t_philo *p)
 	}
 	printf(BLUE);
 	printf("%ld Philosopher %d is eating.\n", elaps_time(p->timings.init_t), p->N);
+	p->last_meal = elaps_time(p->timings.init_t); // ??
 	p->state = EATING;
 	usleep (p->timings.meal_time);
 	release_fork(p->l_fork);
@@ -60,14 +61,13 @@ void	*ft_thread(void *philo)
 	t_philo	*p;
 	// long	curr_time;
 
-
 	p = (t_philo *)philo;
 	p->timings.init_t = ft_gettime(); //or initialize both initial and current here???? <---------------[!]
 	if (p->timings.init_t < 0)
 		return (NULL);	// err handling ??? <-----------------------------------------------------------{!}
-
-	// while (not_dead() && !eaten_enough && nobody_died) // check state, num_meals (if any is given), ??check state of others(can't)
-	while (1)
+	p->last_meal = p->timings.init_t; // ??
+	while (not_dead(p) /*&& !eaten_enough && nobody_died*/) // check state, num_meals (if any is given), ??check state of others(can't)
+	// while (1)
 	{	
 
 		/*testing*/
@@ -89,5 +89,6 @@ void	*ft_thread(void *philo)
 			ft_eat(p);
 		}
 	}
+
 	return (NULL);
 }

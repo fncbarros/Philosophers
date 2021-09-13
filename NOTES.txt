@@ -1,8 +1,10 @@
-Log:    time still wrong I believe (1000000?); printing negatives FIXIT!!!!<--------------------
+Log:    
+        time to die
+        1 philosopher case (2 forks) not working
+        
         "if a philosopher doesn’t start eating ’time_to_die’ milliseconds after starting his last meal or the beginning of the simulation, it dies"
         time_to_die set to zero every time a philosopher finishes eating ?
         Count dead time
-        1 philosopher case (2 forks)
         Priority for taking fork given to thread with the biggest wait time and is not sleeping
         Test for 3
         Error handling and printing to stderr
@@ -11,11 +13,8 @@ Log:    time still wrong I believe (1000000?); printing negatives FIXIT!!!!<----
 
 ?:
 Mutexes protect forks, get sign
-Timming with gettimeofday? Dun (is it tho?)
-Use for pthread_detach?
-Queue for holding forks? 
+Queue for holding forks?
 Any use for return value of thread (2nd param of pthread_join)?
-Mutex prevents all exclusive threads to execute? No!
 What data do I need to pass to threaded function? mutex/fork, timings, philo num(id), state, ...?
 Error handling in threaded function? (3rd loop in main)
 

@@ -51,6 +51,19 @@ int	ft_atoi(const char *str) //LINES!!!!!<---------------------------------[!]
 	return (0);
 }
 
+int	nobody_died(t_philo *p, int N)
+{
+	int	i;
+
+	i = -1;
+	while (++i < N)
+	{
+		if (p[i].state == DEAD)
+			return (0);
+	}
+	return (1);
+}
+
 /*int	callcheck(void *ptr, size_t size) // Experimental...
 { 
 	ptr = calloc(1, size + 1); // '+1'..?

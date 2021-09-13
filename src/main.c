@@ -13,7 +13,8 @@
 #include "../inc/philo.h"
 
 t_philo	*init_structs(char **argv, t_params *params, int i)
-/*	UPDATE LINE NUMS <------------------------------- TOO MANY LINES!!!!!!!!*/
+/*	UPDATE LINE NUMS <------------------------------- TOO MANY LINES!!!!!!!!
+	2 forks for 1 philosopher case*/
 {
 	t_philo	*p; //return value
 
@@ -46,6 +47,7 @@ t_philo	*init_structs(char **argv, t_params *params, int i)
 		p[i].timings = params->timings;
 		p[i].r_fork = &params->fork[i];
 		p[i].l_fork = &params->fork[i + 1];
+		p[i].last_meal = 0; // ??
 	}
 	p[i - 1].l_fork = &params->fork[0];
 	return (p);
@@ -87,7 +89,17 @@ int	main(int argc, char **argv)
 			return (4);
 	}
 
-	/*3rd loop to keep main thread going in the background so struct params can manage queue and stuff??? (thread_detach)*/
+	/*3rd loop to keep main thread going in the background so struct params can manage queue and stuff??? (thread_detach)
+	
+		while (nobody_died(philo, params.philo.num)) // faster than 10us ?? or just print outside this thread
+		{
+			manage queue
+		}
+		// detach threads and release memory
+		// send "signal" to threads??
+
+
+	*/
 
 	i = -1;
 	while (++i < params.philo_num)
