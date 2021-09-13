@@ -54,31 +54,29 @@ t_philo	*init_structs(char **argv, t_params *params, int i)
 }
 
 int	main(int argc, char **argv)
-/*Initialize array of t_philo struct
-  Initialize t_params struct*/
 {
-	t_philo		*philo; // unnecessary if params points to a philo struct already
+	t_philo		*philo; // unnecessary if params points to a philo struct already (.p)
 	t_params	params;
 	int			i;
 
 	philo = NULL;
 	i = -1;
-
 	// early err checking
 	if (!argcheck(argc, argv)) //not working
-		return (1);
+		return (ft_printerr(1));
 	// initializing arguments
 	philo = init_structs(argv, &params, i); // i for saving lines
 	if (!philo)
-		return (2);
-
-
-
+		return (ft_printerr(2));
 	// creating mutexes
 	while (++i < params.philo_num)
 	{
 		if (pthread_mutex_init(&params.fork[i].lock, NULL))
-			return (3);
+		{
+			free(philo);
+			free(params.fork);
+			return (ft_printerr(3));
+		}
 	}
 	//creating threads
 	i = -1;
@@ -86,36 +84,53 @@ int	main(int argc, char **argv)
 	{
 		philo->state = THINKING;
 		if (pthread_create(&philo[i].th, NULL, &ft_thread, &philo[i]))
-			return (4);
+		{
+			free(philo);
+			free(params.fork);
+			return (ft_printerr(4));
+		}
 	}
+
 
 	/*3rd loop to keep main thread going in the background so struct params can manage queue and stuff??? (thread_detach)
 	
-		while (nobody_died(philo, params.philo.num)) // faster than 10us ?? or just print outside this thread
-		{
-			manage queue
-		}
-		// detach threads and release memory
-		// send "signal" to threads??
+	detach threads
 
+	while (nobody_died(philo, params.philo.num)) // faster than 10us ?? or just print outside this thread
+	{
 
+		manage queue
+		(or check if someone has returned: pthread_join(th, &bufferforphilonum))
+	}
+	// release memory; threads already detached
+	// send "signal" to threads??
 	*/
+
 
 	i = -1;
 	while (++i < params.philo_num)
 	{
 		if (pthread_join(philo[i].th, NULL))
-			return (5);
+		{
+			// pthread detach all ??
+			free(philo);
+			free(params.fork);
+			return (ft_printerr(5));
+		}
 	}
-	// (philo + i) = NULL;
-
-
 	// releasing data and memory
 	i = -1;
 	while (++i < params.philo_num)
-		pthread_mutex_destroy(&params.fork[i].lock);
+	{
+		if (pthread_mutex_destroy(&params.fork[i].lock))
+		{
+			// pthread detach all ??
+			free(philo);
+			free(params.fork);
+			return (ft_printerr(6)); // FREE EVERYTHING <-------------------------[!]
+		}
+	}
 	free(philo);
 	free(params.fork);
-	
 	return (0);
 }

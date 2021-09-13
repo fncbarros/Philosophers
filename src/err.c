@@ -6,7 +6,7 @@
 /*   By: fbarros <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/09 16:26:58 by fbarros           #+#    #+#             */
-/*   Updated: 2021/09/09 16:27:00 by fbarros          ###   ########.fr       */
+/*   Updated: 2021/09/13 16:39:00 by fbarros          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,4 +32,26 @@ int	argcheck(int argc, char **argv)
 		}
 	}
 	return (1);
+}
+
+int	ft_printerr(int n)
+{
+	if (n == 1)
+	{
+		printf("Usage: ./philo number_of_philosophers time_to_die "); 
+		printf("time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]\n");
+	}
+	else if (n == 2)
+		write(2, "Failled to allocate memory!\n", 28);
+	else if (n == 3)
+		write(2, "Failed to create mutex!\n", 24);
+	else if (n == 4)
+		write(2, "Failed to create thread!\n", 25);
+	else if (n == 5)
+		write(2, "pthread_join returned error!\n", 29);
+	else if (n == 6)
+		write(2, "Failed to destroy mutex!\n", 25);
+	else
+		return (-1);
+	return (n);
 }

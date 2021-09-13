@@ -103,6 +103,7 @@ int		not_dead(t_philo *p);
 
 /*err.c*/
 int		argcheck(int argc, char **argv);
+int		ft_printerr(int n);
 
 /*time.c*/
 long	elaps_time(long init_time);
