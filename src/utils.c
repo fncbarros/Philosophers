@@ -12,10 +12,10 @@
 
 # include "../inc/philo.h"
 
-int	ft_isdigit(int c)
+bool	ft_isdigit(int c)
 {
 	if (58 > c && 47 < c)
-		return (42);
+		return (1);
 	else
 		return (0);
 }
@@ -51,7 +51,7 @@ int	ft_atoi(const char *str) //LINES!!!!!<---------------------------------[!]
 	return (0);
 }
 
-int	nobody_died(t_philo *p, int N)
+bool	nobody_died(t_philo *p, int N)
 {
 	int	i;
 

@@ -1,6 +1,6 @@
 #include "../inc/philo.h"
 
-int	try_get_fork(t_fork *fork)
+bool	try_get_fork(t_fork *fork)
 /*void for now*/
 {
 
@@ -12,7 +12,7 @@ int	try_get_fork(t_fork *fork)
 	return (1);
 }
 
-int	release_fork(t_fork *fork)
+bool	release_fork(t_fork *fork)
 {
 	if (pthread_mutex_unlock(&fork->lock))
 		return (0);
@@ -20,7 +20,7 @@ int	release_fork(t_fork *fork)
 	return (1);
 }
 
-int	not_dead(t_philo *p)
+bool	not_dead(t_philo *p)
 {
 	if ((long)p->timings.dead_time > elaps_time(p->last_meal))
 		return (1);

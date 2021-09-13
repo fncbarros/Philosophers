@@ -87,18 +87,18 @@ typedef struct s_params
 }	t_params;
 
 /*utils.c*/
-int		ft_isdigit(int c);
+bool	ft_isdigit(int c);
 int		ft_atoi(const char *str);
 long	ft_gettime(void);
-int		nobody_died(t_philo *p, int N);
+bool	nobody_died(t_philo *p, int N);
 
 /*thread.c*/
 void	*ft_thread(void *philo);
 
 /*thread_utils.c*/
-int		try_get_fork(t_fork *fork); // void for now
-int		release_fork(t_fork *fork);
-int		not_dead(t_philo *p);
+bool	try_get_fork(t_fork *fork); // void for now
+bool	release_fork(t_fork *fork);
+bool	not_dead(t_philo *p);
 
 
 /*err.c*/

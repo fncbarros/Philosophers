@@ -1,13 +1,14 @@
 Log:    
-        time to die
+        time to die "counter", starvation "counter" (how to test time elapsed between death and "death declared")
+        ("if a philosopher doesn’t start eating ’time_to_die’ milliseconds after starting his last meal or the beginning of the simulation, it dies")
+    --> check time_util, philo_thread && philo_thread_util (and print_state_or_kill)
         1 philosopher case (2 forks) not working
         
-        "if a philosopher doesn’t start eating ’time_to_die’ milliseconds after starting his last meal or the beginning of the simulation, it dies"
-        time_to_die set to zero every time a philosopher finishes eating ?
-        Count dead time
-        Priority for taking fork given to thread with the biggest wait time and is not sleeping
-        Test for 3
-        Error handling and printing to stderr
+        Preventing dead_lock:
+        Even philos take right fork first, odd ones take left one first;
+        Priority for taking fork given to thread with the biggest wait time and is not sleeping (so "grab" the mutex right away ??)
+        Number of times to eat
+
         if (2 * time_to_eat > curr_time - last_meal)
             no lock
 
@@ -31,8 +32,6 @@ Error handling in threaded function? (3rd loop in main)
         printf("Time taken to count to 10^5 is : %ld micro seconds\n",
         ((end.tv_sec * 1000000 + end.tv_usec) -
         (start.tv_sec * 1000000 + start.tv_usec)));
-
-        A bit confused...
                             ---------TIME---------
 
     forks:

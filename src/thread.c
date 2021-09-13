@@ -89,6 +89,5 @@ void	*ft_thread(void *philo)
 			ft_eat(p);
 		}
 	}
-
-	return (NULL);
+	return (philo); // if dead
 }
