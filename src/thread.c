@@ -25,35 +25,41 @@
 void	ft_sleep(t_philo *p)
 /*passing whole struct or just status and TIMMING ?????????*/
 {
-	printf(GREEN);
+	// printf(GREEN);
 	printf("%ld Philosopher %d is sleeping.\n", elaps_time(p->timings.init_t), p->N);
 	p->state = SLEEPING;
 	usleep (p->timings.sleep_time);
 }
+
 void	ft_eat(t_philo *p)
-/*err handling ??
-  needs releas r_fork if l_fork unnavailable (queue) */
+/*needs releas r_fork if l_fork unnavailable (queue) 
+  f var is stupid*/
 {
-	while (!p->l_fork->is_taken || !p->r_fork->is_taken) // waitting to eat; but not quite cuz priorities
+	// printf(BLUE);
+	while (!p->l_fork->is_taken || !p->r_fork->is_taken) // waiting to eat; more complicated than that really could be cheating
 	{
-		if (!try_get_fork(p->r_fork))
+		if (!try_get_fork(p->r_fork)) // try get forks (plural)
 			continue ;
-		if (!try_get_fork(p->l_fork))
+		printf("%ld Philosopher %d has taken a fork.\n", elaps_time(p->timings.init_t), p->N);
+				if (!try_get_fork(p->l_fork))
 			release_fork(p->r_fork);
+		printf("%ld Philosopher %d has taken a fork.\n", elaps_time(p->timings.init_t), p->N);
 	}
-	printf(BLUE);
 	printf("%ld Philosopher %d is eating.\n", elaps_time(p->timings.init_t), p->N);
 	p->last_meal = elaps_time(p->timings.init_t); // ??
 	p->state = EATING;
 	usleep (p->timings.meal_time);
-	release_fork(p->l_fork);
-	release_fork(p->r_fork);
+	while (!release_fork(p->l_fork) || !release_fork(p->r_fork)) // in case it fails to unlock
+		continue ;
+	printf("%ld Philosopher %d has realeased both forks\n", elaps_time(p->timings.init_t), p->N);
 }
+
 void	ft_think(t_philo *p)
 {
+	// printf(CLR_DFT);
 	printf("%ld Philosopher %d is thinking.\n", elaps_time(p->timings.init_t), p->N);
 	p->state = THINKING;
-	// time left ft ????????
+	// time left ????????
 }
 
 void	*ft_thread(void *philo)
@@ -76,7 +82,7 @@ void	*ft_thread(void *philo)
 		// 	return (NULL);
 		/*testing*/
 
-		printf(CLR_DFT);
+		// printf(CLR_DFT);
 		// if (is_dead) //time_to_die
 		// 	continue ;
 		if (p->state == EATING)

@@ -12,6 +12,7 @@ Log:
         if (2 * time_to_eat > curr_time - last_meal)
             no lock
 
+
 ?:
 Mutexes protect forks, get sign
 Queue for holding forks?
@@ -32,6 +33,21 @@ Error handling in threaded function? (3rd loop in main)
         printf("Time taken to count to 10^5 is : %ld micro seconds\n",
         ((end.tv_sec * 1000000 + end.tv_usec) -
         (start.tv_sec * 1000000 + start.tv_usec)));
+
+--> The Mac delay problem:
+
+        (by msessa)
+        /**/
+        void	ft_sleep(t_timeval start_time, int time_to_sleep_in_us)
+        {
+            usleep(time_to_sleep_in_us - time_to_sleep_in_us / 10);
+            while (ft_delta_tv_in_us(start_time, ft_get_tv())
+                <= time_to_sleep_in_us)
+                continue ;
+        }
+
+        https://www.notion.so/philosophers-VM-c60be9c836084edfbcd9c07e29b429c4
+        "The secret is using small delays in a loop to achieve greater precision"
                             ---------TIME---------
 
     forks:
