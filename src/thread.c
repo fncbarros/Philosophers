@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/philo.h"
+#include "philo.h"
 
 /*	One master function pointed to by param used in pthread_create
 	calling other functions depending on philo state
@@ -21,30 +21,25 @@
 	time keeping tho ??????????????
 	Colors according to action or philosopher?*/
 
-
 void	ft_sleep(t_philo *p)
 /*passing whole struct or just status and TIMMING ?????????*/
 {
-	// printf(GREEN);
 	printf("%ld Philosopher %d is sleeping.\n", elaps_time(p->timings.init_t), p->N);
 	p->state = SLEEPING;
 	usleep (p->timings.sleep_time);
 }
 
 void	ft_eat(t_philo *p)
-/*needs releas r_fork if l_fork unnavailable (queue) 
-  f var is stupid*/
 {
-	// printf(BLUE);
-	while (!p->l_fork->is_taken || !p->r_fork->is_taken) // waiting to eat; more complicated than that really could be cheating
-	{
-		if (!try_get_fork(p->r_fork)) // try get forks (plural)
-			continue ;
-		printf("%ld Philosopher %d has taken a fork.\n", elaps_time(p->timings.init_t), p->N);
-				if (!try_get_fork(p->l_fork))
-			release_fork(p->r_fork);
-		printf("%ld Philosopher %d has taken a fork.\n", elaps_time(p->timings.init_t), p->N);
-	}
+	if (!try_get_fork(p->r_fork)) // try get forks (plural)
+		return ;
+	printf("%ld Philosopher %d has taken a fork.\n", elaps_time(p->timings.init_t), p->N);
+		if (!try_get_fork(p->l_fork))
+		{
+			release_fork(p->r_fork); // !!!!!!
+			return ;
+		}
+	printf("%ld Philosopher %d has taken a fork.\n", elaps_time(p->timings.init_t), p->N);
 	printf("%ld Philosopher %d is eating.\n", elaps_time(p->timings.init_t), p->N);
 	p->last_meal = elaps_time(p->timings.init_t); // ??
 	p->state = EATING;
@@ -56,7 +51,6 @@ void	ft_eat(t_philo *p)
 
 void	ft_think(t_philo *p)
 {
-	// printf(CLR_DFT);
 	printf("%ld Philosopher %d is thinking.\n", elaps_time(p->timings.init_t), p->N);
 	p->state = THINKING;
 	// time left ????????
@@ -65,23 +59,14 @@ void	ft_think(t_philo *p)
 void	*ft_thread(void *philo)
 {
 	t_philo	*p;
-	// long	curr_time;
 
 	p = (t_philo *)philo;
-	p->timings.init_t = ft_gettime(); //or initialize both initial and current here???? <---------------[!]
-	if (p->timings.init_t < 0)
-		return (NULL);	// err handling ??? <-----------------------------------------------------------{!}
+	// p->timings.init_t = 0;
+	// while (p->timings.init_t <= 0) // retry in case of error. init_t won't be same for all threads !!
+	// 	p->timings.init_t = ft_gettime();
 	p->last_meal = p->timings.init_t; // ??
-	while (not_dead(p) /*&& !eaten_enough && nobody_died*/) // check state, num_meals (if any is given), ??check state of others(can't)
-	// while (1)
-	{	
-
-		/*testing*/
-		// curr_time = elaps_time(p->timings.init_t); // so I can check for NULL ret; pass to functions
-		// if (!curr_time)
-		// 	return (NULL);
-		/*testing*/
-
+	while (not_dead(p) && p->nobody_died/*&& !eaten_enough && nobody_died*/) // check state, num_meals (if any is given), ??check state of others(can't)
+	{
 		// printf(CLR_DFT);
 		// if (is_dead) //time_to_die
 		// 	continue ;
@@ -91,9 +76,9 @@ void	*ft_thread(void *philo)
 			ft_think(p);
 		else if (p->state == THINKING)
 		{
-			// try_get_forks();
-			ft_eat(p);
+			//if (try_get_forks()); // returns even if failed
+				ft_eat(p);
 		}
 	}
-	return (philo); // if dead
+	return (philo);
 }

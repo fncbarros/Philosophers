@@ -1,19 +1,22 @@
 NAME = philo
-SRC = src/main.c src/utils.c src/thread.c src/time.c src/err.c src/thread_utils.c
+SRC = src/main.c src/utils.c src/thread.c src/time.c src/err.c src/thread_utils.c src/main_utils.c
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror 
+CFLAGS = -Wall -Wextra -Werror -pthread
 OBJ = $(SRC:c=o)
 
 %.o: %.c
-	$(CC) $(CFLAGS) -pthread -I inc/ -c $< -o $@
+	$(CC) $(CFLAGS) -I inc/ -c $< -o $@
 
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(OBJ) -o $(NAME)
+	$(CC) $(CFLAGS) -I /inc $(OBJ) -o $(NAME)
 
-debug: clean
-	${CC} -g -fsanitize=thread -pthread ${SRC} -o debug ##temporary
+debug: CFLAGS+= -g -fsanitize=thread -DDEBUGMODE=1
+
+debug: NAME=debug
+
+debug: clean all
 	rm -f ${wildcard *.o} ##temporary
 
 leaks:

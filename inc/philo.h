@@ -13,6 +13,14 @@
 #ifndef PHILO_H
 #define PHILO_H
 
+/*------TMP------*/
+# ifdef DEBUGMODE
+#  define DEBUG(x) x
+# else
+#  define DEBUG(x)
+# endif
+/*------TMP------*/
+
 # include <pthread.h>
 # include <stdio.h>
 # include <sys/time.h>
@@ -71,6 +79,8 @@ typedef struct  s_philo
 	t_timings 		timings;
 	t_fork			*r_fork;	// N0 can take fork 0 and 1, N1 can take 1 and 2 ... Nphil_num can take fork phil_num and 0 (r_fork being equivalent to corresponding N)
 	t_fork			*l_fork;	// or t_fork *ptrs <------------------[!!!!!!]
+	t_mutex			*g_lock;	// general_lock
+	bool			*nobody_died;
 }	t_philo;
 
 /*parameters external to t_philo (sorta);
@@ -83,8 +93,16 @@ typedef struct s_params
 	int			philo_num;
 	t_timings 	timings; // ??
 	t_fork		*fork;
+	t_mutex		general_lock;
+	bool		nobody_died;
 	// t_philo		**p; // ??
 }	t_params;
+
+/*main_utils.c*/
+t_philo	*init_philo(t_params *params);
+t_philo	*init_structs(char **argv, t_params *params);
+bool	mutex_init(t_params *params, t_philo *philo, int i);
+int		free_everything(t_params *params, t_philo *philo, int i);
 
 /*utils.c*/
 bool	ft_isdigit(int c);

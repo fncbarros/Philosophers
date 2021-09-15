@@ -10,11 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/philo.h"
+#include "philo.h"
 
 int	argcheck(int argc, char **argv)
 {
-	int i;
+	int	i;
 	int	j;
 
 	if (argc != 5 && argc != 6)
@@ -38,8 +38,9 @@ int	ft_printerr(int n)
 {
 	if (n == 1)
 	{
-		printf("Usage: ./philo number_of_philosophers time_to_die "); 
-		printf("time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]\n");
+		printf("Usage: ./philo <number_of_philosophers> <time_to_die> ");
+		printf("<time_to_eat> <time_to_sleep> ");
+		printf("[number_of_times_each_philosopher_must_eat]\n");
 	}
 	else if (n == 2)
 		write(2, "Failled to allocate memory!\n", 28);
