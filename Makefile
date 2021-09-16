@@ -12,22 +12,25 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) -I /inc $(OBJ) -o $(NAME)
 
+# ------------------ TMP -------------------------
 debug: CFLAGS+= -g -fsanitize=thread -DDEBUGMODE=1
 
 debug: NAME=debug
 
-debug: clean all
-	rm -f ${wildcard *.o} ##temporary
+debug: re
 
-leaks:
-	${CC} -g -fsanitize=address -pthread ${SRC} -o debug ##temporary
-	rm -f ${wildcard *.o} ##temporary
+leaks: CFLAGS+= -g -fsanitize=address -DDEBUGMODE=1
+
+leaks: NAME=debug
+
+leaks: re
+# ------------------ TMP -------------------------
 
 clean:
 	rm -f $(OBJ)
 
 fclean: clean
-	rm -rf $(NAME) leaks debug ${wildcard *.dSYM} ##temporary
+	rm -rf $(NAME) leaks debug ${wildcard *.dSYM}
 
 re: fclean all
 

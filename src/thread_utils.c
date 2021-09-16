@@ -18,9 +18,9 @@ bool	try_get_fork(t_fork *fork)
 	// try ... condition to prevent waiting for mutex ??? queue?
 	if (fork->is_taken)
 		return (0);
+	fork->is_taken = 1;
 	if (pthread_mutex_lock(&fork->lock))
 		return (0);
-	fork->is_taken = 1;
 	return (1);
 }
 
@@ -45,7 +45,20 @@ bool	not_dead(t_philo *p) // print_or_die
 		printf(RED);
 		printf("%ld Philosopher %d has died.\n", elaps_time(p->timings.init_t), p->N);
 		p->state = DEAD;
+		printf(CLR_DFT);
 		pthread_mutex_unlock(p->g_lock);
+		exit(1);
 		return (0);
 	}
+}
+
+bool	eaten_enough(t_philo *p)
+/*experimental*/
+{
+	if (p->meals_eaten >= p->timings.num_meals)
+	{
+		p->state = DEAD;
+		return (1);
+	}
+	return (0);
 }

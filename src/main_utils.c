@@ -12,7 +12,7 @@
 
 #include "philo.h"
 
-t_philo	*init_philo(t_params *params)
+static t_philo	*init_philo(t_params *params)
 {
 	t_philo	*p;
 	int		i;
@@ -27,11 +27,13 @@ t_philo	*init_philo(t_params *params)
 	while (++i < params->philo_num)
 	{
 		p[i].N = i + 1;
-		params->fork[i].is_taken = 0;
+		p[i].state = THINKING;
 		p[i].timings = params->timings;
+		p[i].last_meal = 0;
+		p[i].meals_eaten = 0;
+		params->fork[i].is_taken = 0;
 		p[i].r_fork = &params->fork[i];
 		p[i].l_fork = &params->fork[i + 1];
-		p[i].last_meal = 0;
 		p[i].g_lock = &params->general_lock;
 		p[i].nobody_died = &params->nobody_died;
 	}
@@ -40,8 +42,7 @@ t_philo	*init_philo(t_params *params)
 }
 
 t_philo	*init_structs(char **argv, t_params *params)
-/*	UPDATE LINE NUMS <------------------------------- TOO MANY LINES!!!!!!!!
-	2 forks for 1 philosopher case*/
+/*2 forks for 1 philosopher case*/
 {
 	params->philo_num = ft_atoi(argv[1]);
 	params->timings.dead_time = ft_atoi(argv[2]);
@@ -56,7 +57,6 @@ t_philo	*init_structs(char **argv, t_params *params)
 	params->fork = calloc(params->philo_num, sizeof(t_fork));
 	if (!params->fork)
 		return (NULL);
-	params->timings.init_t = 0;
 	while (params->timings.init_t <= 0) // retry in case of error. init_t won't be same for all threads !!
 		params->timings.init_t = ft_gettime();
 	// initializing philosophers infos
@@ -85,16 +85,19 @@ bool	mutex_init(t_params *params, t_philo *philo, int i)
 
 int	free_everything(t_params *params, t_philo *philo, int i)
 {
+	int	ret;
+
+	ret = 0;
 	pthread_mutex_destroy(&params->general_lock);
 	while (++i < params->philo_num)
 	{
 		if (pthread_mutex_destroy(&params->fork[i].lock))
 		{
-			i--; // ??
-			// return (ft_printerr(6));
+			// i--; // ??
+			ret = 6;
 		}
 	}
 	free(philo);
 	free(params->fork);
-	return (0);
+	return (ret);
 }

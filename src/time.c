@@ -13,8 +13,6 @@
 #include "philo.h"
 
 long	ft_gettime(void)
-/*t_tv == struct timeval
-	1000 ?*/
 {
 	t_tv	t;
 
@@ -26,9 +24,9 @@ long	ft_gettime(void)
 
 long	elaps_time(long init_time)
 {
-	long long	curr_time;
+	long	curr_time;
 
-	curr_time = (long long)ft_gettime();
+	curr_time = ft_gettime();
 	if (curr_time == -1)
 		return (0);
 	return (curr_time - init_time);

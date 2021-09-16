@@ -21,9 +21,11 @@ int	main(int argc, char **argv)
 
 	philo = NULL;
 	i = -1;
+
 	/*-------------TMP--------------*/
 	DEBUG(printf("Debug mode on\n");)
 	/*-------------TMP--------------*/
+
 	// early err checking
 	if (!argcheck(argc, argv)) //not working
 		return (ft_printerr(1));
@@ -37,7 +39,9 @@ int	main(int argc, char **argv)
 	// creating threads
 	while (++i < params.philo_num)
 	{
-		philo->state = THINKING;
+		/*---------------------------TMP-----------------------------*/
+		usleep(100);
+		/*---------------------------TMP-----------------------------*/
 		if (pthread_create(&philo[i].th, NULL, &ft_thread, &philo[i]))
 		{
 			free(philo);
@@ -45,6 +49,7 @@ int	main(int argc, char **argv)
 			return (ft_printerr(4));
 		}
 	}
+
 	/*3rd loop to keep main thread going in the background so struct params can manage queue and stuff??? (thread_detach)
 	detach threads
 	while (nobody_died(philo, params.philo.num)) // faster than 10us ?? or just print outside this thread
@@ -55,6 +60,7 @@ int	main(int argc, char **argv)
 	// release memory; threads already detached
 	// send "signal" to threads??
 	*/
+
 	i = -1;
 	while (++i < params.philo_num)
 	{
