@@ -47,11 +47,11 @@ typedef	struct timeval t_tv;
   + initial time*/
 typedef struct s_timings
 {
-	int			dead_time;
-	int			meal_time;
-	int			sleep_time;
+	long long	dead_time;
+	long		meal_time;
+	long		sleep_time;
 	int			num_meals;
-	long		init_t;
+	long long	init_t;
 }				t_timings;
 
 typedef struct s_fork
@@ -73,7 +73,7 @@ typedef struct  s_philo
 	int				N;
 	pthread_t		th;
 	t_philo_state	state;
-	long			last_meal;
+	long long		last_meal;
 	int				meals_eaten; // ...
 	t_timings 		timings;
 	t_fork			*r_fork;	// N0 can take fork 0 and 1, N1 can take 1 and 2 ... Nphil_num can take fork phil_num and 0 (r_fork being equivalent to corresponding N)
@@ -116,6 +116,8 @@ bool	try_get_fork(t_fork *fork);
 bool	release_fork(t_fork *fork);
 bool	not_dead(t_philo *p);
 bool	eaten_enough(t_philo *p);
+void	ft_printmsg(t_philo *p, char *msg);
+
 
 
 /*err.c*/
@@ -123,7 +125,9 @@ int		argcheck(int argc, char **argv);
 int		ft_printerr(int n);
 
 /*time.c*/
-long	ft_gettime(void);
-long	elaps_time(long init_time);
+long long	ft_gettime(void);
+long long	elaps_time(long long init_time);
+long long	elaps_time_tv(t_tv init_time);
+void	ft_usleep(int time);
 
 #endif

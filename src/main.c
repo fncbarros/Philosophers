@@ -39,9 +39,9 @@ int	main(int argc, char **argv)
 	// creating threads
 	while (++i < params.philo_num)
 	{
-		/*---------------------------TMP-----------------------------*/
+		/*----TMP-----*/
 		usleep(100);
-		/*---------------------------TMP-----------------------------*/
+		/*----TMP----*/
 		if (pthread_create(&philo[i].th, NULL, &ft_thread, &philo[i]))
 		{
 			free(philo);
@@ -50,6 +50,7 @@ int	main(int argc, char **argv)
 		}
 	}
 
+	/*-------------------------------TEST--------------------------------*/
 	/*3rd loop to keep main thread going in the background so struct params can manage queue and stuff??? (thread_detach)
 	detach threads
 	while (nobody_died(philo, params.philo.num)) // faster than 10us ?? or just print outside this thread
@@ -60,6 +61,7 @@ int	main(int argc, char **argv)
 	// release memory; threads already detached
 	// send "signal" to threads??
 	*/
+	/*-------------------------------TEST--------------------------------*/
 
 	i = -1;
 	while (++i < params.philo_num)

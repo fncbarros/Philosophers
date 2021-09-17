@@ -33,17 +33,17 @@ bool	release_fork(t_fork *fork)
 }
 
 bool	not_dead(t_philo *p) // print_or_die
-/*someone died var
-	ft_exit*/
+/*KILL EVERYONE */
 {
-	if ((long)p->timings.dead_time > elaps_time(p->last_meal))
+	// printf ("%lld\n",elaps_time(p->last_meal));
+	if (p->timings.dead_time >= elaps_time(p->last_meal))
 		return (1);
 	else
 	{
 		pthread_mutex_lock(p->g_lock); // not really
 		p->nobody_died = 0;
 		printf(RED);
-		printf("%ld Philosopher %d has died.\n", elaps_time(p->timings.init_t), p->N);
+		ft_printmsg(p, "has died.");
 		p->state = DEAD;
 		printf(CLR_DFT);
 		pthread_mutex_unlock(p->g_lock);
@@ -53,12 +53,22 @@ bool	not_dead(t_philo *p) // print_or_die
 }
 
 bool	eaten_enough(t_philo *p)
-/*experimental*/
+/*experimental, working for now*/
 {
-	if (p->meals_eaten >= p->timings.num_meals)
+	if (p->timings.num_meals && p->meals_eaten >= p->timings.num_meals)
 	{
 		p->state = DEAD;
 		return (1);
 	}
 	return (0);
+}
+
+void	ft_printmsg(t_philo *p, char *msg)
+{
+	long long	time;
+
+	time = elaps_time(p->timings.init_t);
+	pthread_mutex_lock(p->g_lock);
+	printf("%lld Philosopher %d %s\n", time, p->N, msg);
+	pthread_mutex_unlock(p->g_lock);
 }

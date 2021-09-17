@@ -12,13 +12,14 @@ Log:
         if (2 * time_to_eat > curr_time - last_meal)
             no lock
 
-
 ?:
 Mutexes protect forks, get sign
 Queue for holding forks?
 Any use for return value of thread (2nd param of pthread_join)?
 What data do I need to pass to threaded function? mutex/fork, timings, philo num(id), state, ...?
 Error handling in threaded function? (3rd loop in main)
+if any pthread or gettimeofday ft fails, should I retry?
+Should I register initial time once for all or once for each as I create threads?
 
                             ---------TIME---------
         (long)
@@ -144,3 +145,10 @@ b <breakpoint> thread <thread_num> -- sets breakpoint to thread specified by <th
 
 FSANITIZE:
 -fsanitize=thread (on compilation)
+
+(On *.h file):
+#if defined(__has_feature)
+#  if __has_feature(thread_sanitizer)
+// code that builds only under ThreadSanitizer
+#  endif
+#endif
