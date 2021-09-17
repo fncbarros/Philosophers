@@ -15,8 +15,8 @@
 void	ft_sleep(t_philo *p)
 /*passing whole struct or just status and TIMMING ?????????*/
 {
-	ft_printmsg(p, "is sleeping.");
 	p->state = SLEEPING;
+	ft_printmsg(p, "is sleeping.");
 	ft_usleep(p->timings.sleep_time);
 	// usleep((useconds_t)p->timings.sleep_time);
 }
@@ -26,36 +26,39 @@ void	ft_eat(t_philo *p)
 	delay ?
 	release first if second taken then return (for dead checking)*/
 {
-	if (p->N % 2 == 0)
-	{
-		if (!try_get_fork(p->r_fork))
-			return ;
-		ft_printmsg(p, "has taken a fork.");
-			if (!try_get_fork(p->l_fork))
-			{
-				release_fork(p->r_fork);
-				ft_printmsg(p, "has released a fork.");
-				return ;
-			}
-		ft_printmsg(p, "has taken a fork.");
-	}
-	else
-	{
+	// if (p->N % 2 == 0)
+	// {
+	if (!try_get_fork(p->r_fork))
+		return ;
+	if (!ft_printmsg(p, "has taken a fork."))
+		return ;
 		if (!try_get_fork(p->l_fork))
+		{
+			release_fork(p->r_fork);
+			ft_printmsg(p, "has released a fork.");
 			return ;
-		ft_printmsg(p, "has taken a fork.");
-			if (!try_get_fork(p->r_fork))
-			{
-				release_fork(p->l_fork);
-				return ;
-			}
-		ft_printmsg(p, "has taken a fork.");
-	}
+		}
+	if (!ft_printmsg(p, "has taken a fork."))
+		return ;
+	// }
+	// else
+	// {
+	// 	if (!try_get_fork(p->l_fork))
+	// 		return ;
+	// 	ft_printmsg(p, "has taken a fork.");
+	// 		if (!try_get_fork(p->r_fork))
+	// 		{
+	// 			release_fork(p->l_fork);
+	// 			return ;
+	// 		}
+	// 	ft_printmsg(p, "has taken a fork.");
+	// }
 	
 	
-	ft_printmsg(p, "is eating.");
-	p->last_meal = ft_gettime(); // ??
 	p->state = EATING;
+	if(!ft_printmsg(p, "is eating."))
+		return ;
+	p->last_meal = ft_gettime(); // ??
 	p->meals_eaten++;	
 	ft_usleep(p->timings.meal_time);
 	// usleep((useconds_t)p->timings.meal_time);
@@ -64,17 +67,13 @@ void	ft_eat(t_philo *p)
 	// while (!release_fork(p->l_fork) || !release_fork(p->r_fork)) // in case it fails to unlock..?
 	// 	continue ;
 	ft_printmsg(p, "has released both forks.");
+	pthread_mutex_unlock(&p->l_fork->lock); // hate it ... 
 }
-
-
-
-
-
 
 void	ft_think(t_philo *p)
 {
-	ft_printmsg(p, "is thinking.");
 	p->state = THINKING;
+	ft_printmsg(p, "is thinking.");
 	// time left ????????
 }
 
@@ -89,8 +88,6 @@ void	*ft_thread(void *philo)
 	p->last_meal = p->timings.init_t; // ??
 	while (not_dead(p) && p->nobody_died && !eaten_enough(p)) // check state, num_meals (if any is given), ??check state of others(can't)
 	{
-		// if (is_dead) //time_to_die
-		// 	continue ;
 		if (p->state == EATING)
 			ft_sleep(p);
 		else if (p->state == SLEEPING)

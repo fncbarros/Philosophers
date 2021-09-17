@@ -13,22 +13,38 @@
 #include "philo.h"
 
 bool	try_get_fork(t_fork *fork)
-/*Not sure if it protects anything outside function (whats the point then if no var??)*/
+/* Need condition in case there's but 1 fork
+Not sure if it protects anything outside function (whats the point then if no var??)*/
 {
-	// try ... condition to prevent waiting for mutex ??? queue?
-	if (fork->is_taken)
-		return (0);
-	fork->is_taken = 1;
 	if (pthread_mutex_lock(&fork->lock))
+		return (0);
+	if (fork->is_taken)
+	{
+		if (pthread_mutex_unlock(&fork->lock))
+			return (0);
+		return (0);
+	}
+	fork->is_taken = 1;
+	if (pthread_mutex_unlock(&fork->lock))
 		return (0);
 	return (1);
 }
 
 bool	release_fork(t_fork *fork)
+/*l.:42 if <fork> is the 2nd to be put down 
+<second_fork> will be 0 after this operation 
+to avoid anybody aleggingto be taking an already holding fork*/
 {
-	if (pthread_mutex_unlock(&fork->lock))
+	static bool	second_fork;
+
+	if (pthread_mutex_lock(&fork->lock))
 		return (0);
 	fork->is_taken = 0;
+	second_fork ^= 1; 
+	if (!second_fork)
+		return (1);
+	if (pthread_mutex_unlock(&fork->lock))
+		return (0);
 	return (1);
 }
 
@@ -36,18 +52,23 @@ bool	not_dead(t_philo *p) // print_or_die
 /*KILL EVERYONE */
 {
 	// printf ("%lld\n",elaps_time(p->last_meal));
-	if (p->timings.dead_time >= elaps_time(p->last_meal))
+	if (pthread_mutex_lock(p->g_lock))
+		return (0);
+	else if (p->timings.dead_time >= elaps_time(p->last_meal) && p->nobody_died) // they'll all print dead this way!!
+	{
+		if (pthread_mutex_unlock(p->g_lock))
+			return (0);
 		return (1);
+	}
 	else
 	{
-		pthread_mutex_lock(p->g_lock); // not really
 		p->nobody_died = 0;
 		printf(RED);
-		ft_printmsg(p, "has died.");
 		p->state = DEAD;
+		if (pthread_mutex_unlock(p->g_lock))
+			return (0);
+		ft_printmsg(p, "has died.");
 		printf(CLR_DFT);
-		pthread_mutex_unlock(p->g_lock);
-		exit(1);
 		return (0);
 	}
 }
@@ -63,12 +84,19 @@ bool	eaten_enough(t_philo *p)
 	return (0);
 }
 
-void	ft_printmsg(t_philo *p, char *msg)
+bool	ft_printmsg(t_philo *p, char *msg)
 {
 	long long	time;
 
 	time = elaps_time(p->timings.init_t);
 	pthread_mutex_lock(p->g_lock);
+	if (p->state != DEAD && !p->nobody_died)
+	{
+		pthread_mutex_unlock(p->g_lock);
+		p->state = SOMEONE_DIED;
+		return (0);
+	}
 	printf("%lld Philosopher %d %s\n", time, p->N, msg);
 	pthread_mutex_unlock(p->g_lock);
+	return (1);
 }

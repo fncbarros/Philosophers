@@ -65,7 +65,8 @@ typedef enum	e_philo_state
 	THINKING,
 	EATING,
 	SLEEPING,
-	DEAD
+	DEAD,
+	SOMEONE_DIED
 }	t_philo_state;
 
 typedef struct  s_philo
@@ -116,7 +117,7 @@ bool	try_get_fork(t_fork *fork);
 bool	release_fork(t_fork *fork);
 bool	not_dead(t_philo *p);
 bool	eaten_enough(t_philo *p);
-void	ft_printmsg(t_philo *p, char *msg);
+bool	ft_printmsg(t_philo *p, char *msg);
 
 
 

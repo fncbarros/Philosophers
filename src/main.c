@@ -40,8 +40,10 @@ int	main(int argc, char **argv)
 	while (++i < params.philo_num)
 	{
 		/*----TMP-----*/
-		usleep(100);
+		// usleep(100);
 		/*----TMP----*/
+		params.timings.init_t = ft_gettime();
+		philo[i].timings.init_t = params.timings.init_t; // the fair way
 		if (pthread_create(&philo[i].th, NULL, &ft_thread, &philo[i]))
 		{
 			free(philo);
