@@ -33,14 +33,14 @@ Not sure if it protects anything outside function (whats the point then if no va
 bool	release_fork(t_fork *fork)
 /*l.:42 if <fork> is the 2nd to be put down 
 <second_fork> will be 0 after this operation 
-to avoid anybody aleggingto be taking an already holding fork*/
+to avoid any philosopher from claiming to be taking an already holding fork*/
 {
 	static bool	second_fork;
 
 	if (pthread_mutex_lock(&fork->lock))
 		return (0);
 	fork->is_taken = 0;
-	second_fork ^= 1; 
+	second_fork ^= 1;
 	if (!second_fork)
 		return (1);
 	if (pthread_mutex_unlock(&fork->lock))

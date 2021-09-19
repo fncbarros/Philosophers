@@ -3,6 +3,8 @@ Log:
         ("if a philosopher doesn’t start eating ’time_to_die’ milliseconds after starting his last meal or the beginning of the simulation, it dies")
     --> check time_util, philo_thread && philo_thread_util (and print_state_or_kill)
         1 philosopher case (2 forks) not working
+        print only when both forks acquired for clarity
+        static bool "a_philo_has_died" on printer function
         
         Preventing dead_lock:
         Even philos take right fork first, odd ones take left one first;

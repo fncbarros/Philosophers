@@ -26,8 +26,6 @@ void	ft_eat(t_philo *p)
 	delay ?
 	release first if second taken then return (for dead checking)*/
 {
-	// if (p->N % 2 == 0)
-	// {
 	if (!try_get_fork(p->r_fork))
 		return ;
 	if (!ft_printmsg(p, "has taken a fork."))
@@ -40,21 +38,6 @@ void	ft_eat(t_philo *p)
 		}
 	if (!ft_printmsg(p, "has taken a fork."))
 		return ;
-	// }
-	// else
-	// {
-	// 	if (!try_get_fork(p->l_fork))
-	// 		return ;
-	// 	ft_printmsg(p, "has taken a fork.");
-	// 		if (!try_get_fork(p->r_fork))
-	// 		{
-	// 			release_fork(p->l_fork);
-	// 			return ;
-	// 		}
-	// 	ft_printmsg(p, "has taken a fork.");
-	// }
-	
-	
 	p->state = EATING;
 	if(!ft_printmsg(p, "is eating."))
 		return ;
