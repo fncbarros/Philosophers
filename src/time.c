@@ -33,6 +33,8 @@ long long	elaps_time(long long init_time)
 	// // elapsed = curr_time.tv_sec * 1000000 + curr_time.tv_usec - init_time;
 	// // elapsed += curr_time.tv_usec / 1000 - init_time;
 	// return (elapsed);
+	if (!init_time)
+		return (0);
 	return (ft_gettime() - init_time);
 }
 

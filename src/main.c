@@ -26,23 +26,23 @@ int	main(int argc, char **argv)
 	DEBUG(printf("Debug mode on\n");)
 	/*-------------TMP--------------*/
 
-	// early err checking
+	// EARLY ERROR CHECKING
 	if (!argcheck(argc, argv)) //not working
 		return (ft_printerr(1));
-	// initializing arguments
+	// INITIALIZING ARGUMENTS
 	philo = init_structs(argv, &params); // i for saving lines
 	if (!philo)
 		return (ft_printerr(2));
-	// creating mutexes
+	// CREATING MUTEXES
 	if (!mutex_init(&params, philo, i))
 		return (ft_printerr(3));
-	// creating threads
+	// CREATING THREADS
 	while (++i < params.philo_num)
 	{
 		/*----TMP-----*/
 		// usleep(100);
 		/*----TMP----*/
-		params.timings.init_t = ft_gettime();
+		// params.timings.init_t = ft_gettime();
 		philo[i].timings.init_t = params.timings.init_t; // the fair way
 		if (pthread_create(&philo[i].th, NULL, &ft_thread, &philo[i]))
 		{

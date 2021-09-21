@@ -31,8 +31,8 @@ Not sure if it protects anything outside function (whats the point then if no va
 }
 
 bool	release_fork(t_fork *fork)
-/*l.:42 if <fork> is the 2nd to be put down 
-<second_fork> will be 0 after this operation 
+/*l.:42 if <fork> is the 2nd to be put down
+<second_fork> will be 0 after this operation
 to avoid any philosopher from claiming to be taking an already holding fork*/
 {
 	static bool	second_fork;
@@ -51,10 +51,9 @@ to avoid any philosopher from claiming to be taking an already holding fork*/
 bool	not_dead(t_philo *p) // print_or_die
 /*KILL EVERYONE */
 {
-	// printf ("%lld\n",elaps_time(p->last_meal));
 	if (pthread_mutex_lock(p->g_lock))
 		return (0);
-	else if (p->timings.dead_time >= elaps_time(p->last_meal) && p->nobody_died) // they'll all print dead this way!!
+	else if ((p->timings.dead_time >= elaps_time(p->last_meal)) && !p->someone_died)
 	{
 		if (pthread_mutex_unlock(p->g_lock))
 			return (0);
@@ -62,11 +61,13 @@ bool	not_dead(t_philo *p) // print_or_die
 	}
 	else
 	{
-		p->nobody_died = 0;
-		printf(RED);
+		// p->nobody_died = 0; //??
+		// *p->someone_died = ft_gettime(); // or
+		*p->someone_died = elaps_time(p->timings.init_t);
 		p->state = DEAD;
 		if (pthread_mutex_unlock(p->g_lock))
 			return (0);
+		printf(RED);
 		ft_printmsg(p, "has died.");
 		printf(CLR_DFT);
 		return (0);
@@ -78,7 +79,11 @@ bool	eaten_enough(t_philo *p)
 {
 	if (p->timings.num_meals && p->meals_eaten >= p->timings.num_meals)
 	{
+		pthread_mutex_lock(p->g_lock);
 		p->state = DEAD;
+		*p->someone_died = elaps_time(p->timings.init_t); // ft_do_dead...
+		// p->nobody_died = 0;
+		pthread_mutex_unlock(p->g_lock);
 		return (1);
 	}
 	return (0);
@@ -87,13 +92,17 @@ bool	eaten_enough(t_philo *p)
 bool	ft_printmsg(t_philo *p, char *msg)
 {
 	long long	time;
+	unsigned long long	time_since_death;
 
+	time_since_death = elaps_time(*p->someone_died);
 	time = elaps_time(p->timings.init_t);
 	pthread_mutex_lock(p->g_lock);
-	if (p->state != DEAD && !p->nobody_died)
+	if ((p->state != DEAD) && p->nobody_died)
 	{
-		pthread_mutex_unlock(p->g_lock);
+		if (time_since_death <= 10 && time_since_death > 0)
+			printf("%lld Philosopher %d %s\n", *p->someone_died + time_since_death, p->N, msg);
 		p->state = SOMEONE_DIED;
+		pthread_mutex_unlock(p->g_lock);
 		return (0);
 	}
 	printf("%lld Philosopher %d %s\n", time, p->N, msg);

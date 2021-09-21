@@ -80,6 +80,7 @@ typedef struct  s_philo
 	t_fork			*r_fork;	// N0 can take fork 0 and 1, N1 can take 1 and 2 ... Nphil_num can take fork phil_num and 0 (r_fork being equivalent to corresponding N)
 	t_fork			*l_fork;
 	t_mutex			*g_lock;
+	long long		*someone_died;
 	bool			*nobody_died;
 }	t_philo;
 
@@ -94,7 +95,8 @@ typedef struct s_params
 	t_timings 	timings; // any use here?
 	t_fork		*fork;
 	t_mutex		general_lock;
-	bool		nobody_died;
+	long long	someone_died;
+	// bool		nobody_died;
 	// t_philo		*p; // ??
 }	t_params;
 

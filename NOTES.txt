@@ -1,11 +1,14 @@
-Log:    
+Log:
         time to die "counter", starvation "counter" (how to test time elapsed between death and "death declared")
         ("if a philosopher doesn’t start eating ’time_to_die’ milliseconds after starting his last meal or the beginning of the simulation, it dies")
     --> check time_util, philo_thread && philo_thread_util (and print_state_or_kill)
         1 philosopher case (2 forks) not working
         print only when both forks acquired for clarity
         static bool "a_philo_has_died" on printer function
-        
+        "general mutex" specifically for printing to avoid "scrambling or intertwinning"
+        time to die "counter", starvation "counter" (how to test time elapsed
+        between death and "death declared")
+
         Preventing dead_lock:
         Even philos take right fork first, odd ones take left one first;
         Priority for taking fork given to thread with the biggest wait time and is not sleeping (so "grab" the mutex right away ??)
@@ -79,7 +82,7 @@ int main()
 
     if (pthread_create(&newthread, NULL, thread_func, NULL)) //newthread will execute thread_func concurrently w/ main until one finished or ...
         return (1);
-        ---     
+        ---
     pthread_join(&newthread, NULL); // will wait for other threads to finish
 }
    > -------- & -------- <
@@ -88,7 +91,7 @@ PASSING ARGUMENTS TO THREADS:
 void    *thread_func(void *args)
 {
     <data_type> *data = (<data_type> *)args;
-    
+
     // ... do stuff
 }
 
@@ -99,7 +102,7 @@ int main()
 
     if (pthread_create(&newthread, NULL, thread_func, &arg)) //
         return (1);
-        ---     
+        ---
     pthread_join(&newthread, ...); //
 }
 
@@ -118,7 +121,7 @@ int main()
 
     if (pthread_create(&newthread, NULL, thread_func, NULL))
         return (1);
-        ---     
+        ---
     pthread_join(&newthread, &argback); // last arg being 'void **'
 }
 
@@ -154,3 +157,73 @@ FSANITIZE:
 // code that builds only under ThreadSanitizer
 #  endif
 #endif
+
+DELETED:
+
+[thread.c]
+void    ft_eat(t_philo *p)
+{
+	if (!try_get_fork(p->r_fork))
+		return ;
+	if (!ft_printmsg(p, "has taken a fork."))
+		return ;
+	if (!try_get_fork(p->l_fork))
+	{
+		release_fork(p->r_fork);
+		ft_printmsg(p, "has released a fork."); //no need for err checking here
+		return ;
+	}
+	if (!ft_printmsg(p, "has taken a fork."))
+		return ;
+	p->state = EATING;
+	if(!ft_printmsg(p, "is eating."))
+		return ;
+	p->last_meal = ft_gettime(); // ??
+	p->meals_eaten++;
+	ft_usleep(p->timings.meal_time);
+	// usleep((useconds_t)p->timings.meal_time);
+	release_fork(p->r_fork);
+	release_fork(p->l_fork);
+	// while (!release_fork(p->l_fork) || !release_fork(p->r_fork)) // in case it fails to unlock..?
+	// 	continue ;
+	ft_printmsg(p, "has released both forks.");
+	pthread_mutex_unlock(&p->l_fork->lock); // hate it ...
+}
+
+[thread_utils.c]
+
+bool	try_get_fork(t_fork *fork)
+/* Need condition in case there's but 1 fork
+Not sure if it protects anything outside function (whats the point then if no var??)*/
+{
+	if (pthread_mutex_lock(&fork->lock))
+		return (0);
+	if (fork->is_taken)
+	{
+		if (pthread_mutex_unlock(&fork->lock))
+			return (0);
+		return (0);
+	}
+	fork->is_taken = 1;
+	if (pthread_mutex_unlock(&fork->lock))
+		return (0);
+	return (1);
+}
+
+bool	release_fork(t_fork *fork)
+/*l.:42 if <fork> is the 2nd to be put down
+<second_fork> will be 0 after this operation
+to avoid any philosopher from claiming to be taking an already holding fork*/
+{
+	static bool	second_fork;
+
+	if (pthread_mutex_lock(&fork->lock))
+		return (0);
+	fork->is_taken = 0;
+	second_fork ^= 1;
+	if (!second_fork)
+		return (1);
+	if (pthread_mutex_unlock(&fork->lock))
+		return (0);
+	return (1);
+}
