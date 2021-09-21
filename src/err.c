@@ -34,8 +34,15 @@ int	argcheck(int argc, char **argv)
 	return (1);
 }
 
+int	set_error(int *ptr, int err) // or mutex and point to err element in params ... [!!]
+{
+	*ptr = err;
+	return (0);
+}
+
 int	ft_printerr(int n)
 {
+	// printf(YELLOW);
 	if (n == 1)
 	{
 		printf("Usage: ./philo <number_of_philosophers> <time_to_die> ");
@@ -52,7 +59,12 @@ int	ft_printerr(int n)
 		write(2, "pthread_join returned error!\n", 29);
 	else if (n == 6)
 		write(2, "Failed to destroy mutex!\n", 25);
+	else if (n == 7)
+		write(2, "gettimeofday returned error!\n", 29);
+	else if (n == 8)
+		write(2, "Mutex returned error!\n", 22);
 	else
 		return (-1);
+	printf(CLR_DFT);
 	return (n);
 }

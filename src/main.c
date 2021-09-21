@@ -12,70 +12,34 @@
 /* ************************************************************************** */
 
 #include "philo.h"
+#include "ft_error.h" // ...
 
 int	main(int argc, char **argv)
 {
 	t_philo		*philo;
 	t_params	params;
-	int			i;
+	int			ret;
 
 	philo = NULL;
-	i = -1;
+	ret = 0;
 
 	/*-------------TMP--------------*/
-	DEBUG(printf("Debug mode on\n");)
+	// DEBUG(printf("Debug mode on\n");)
 	/*-------------TMP--------------*/
 
 	// EARLY ERROR CHECKING
-	if (!argcheck(argc, argv)) //not working
+	if (!argcheck(argc, argv))
 		return (ft_printerr(1));
 	// INITIALIZING ARGUMENTS
-	philo = init_structs(argv, &params); // i for saving lines
+	philo = init_structs(argv, &params);
 	if (!philo)
 		return (ft_printerr(2));
 	// CREATING MUTEXES
-	if (!mutex_init(&params, philo, i))
+	if (!mutex_init(&params, philo, -1))
 		return (ft_printerr(3));
 	// CREATING THREADS
-	while (++i < params.philo_num)
-	{
-		/*----TMP-----*/
-		// usleep(100);
-		/*----TMP----*/
-		// params.timings.init_t = ft_gettime();
-		philo[i].timings.init_t = params.timings.init_t; // the fair way
-		if (pthread_create(&philo[i].th, NULL, &ft_thread, &philo[i]))
-		{
-			free(philo);
-			free(params.fork);
-			return (ft_printerr(4));
-		}
-	}
-
-	/*-------------------------------TEST--------------------------------*/
-	/*3rd loop to keep main thread going in the background so struct params can manage queue and stuff??? (thread_detach)
-	detach threads
-	while (nobody_died(philo, params.philo.num)) // faster than 10us ?? or just print outside this thread
-	{
-		manage queue
-		(or check if someone has returned: pthread_join(th, &bufferforphilonum))
-	}
-	// release memory; threads already detached
-	// send "signal" to threads??
-	*/
-	/*-------------------------------TEST--------------------------------*/
-
-	i = -1;
-	while (++i < params.philo_num)
-	{
-		if (pthread_join(philo[i].th, NULL))
-		{
-			// pthread detach all ??
-			free(philo);
-			free(params.fork);
-			return (ft_printerr(5));
-		}
-	}
-	// releasing data and memory
-	return (free_everything(&params, philo, -1));
+	ret = init_threads(params.philo_num, philo, -1);
+	if (!ret)
+		ret = params.retnum;
+	return (ft_printerr(free_everything(&params, philo, -1, ret)));
 }

@@ -1,4 +1,6 @@
 Log:
+        printing out of control
+        err return needs better handling
         time to die "counter", starvation "counter" (how to test time elapsed between death and "death declared")
         ("if a philosopher doesn’t start eating ’time_to_die’ milliseconds after starting his last meal or the beginning of the simulation, it dies")
     --> check time_util, philo_thread && philo_thread_util (and print_state_or_kill)
@@ -16,6 +18,9 @@ Log:
 
         if (2 * time_to_eat > curr_time - last_meal)
             no lock
+
+        LLONG_MAX = 9223372036854775807
+        ULLONG_MAX = 18446744073709551615
 
 ?:
 Mutexes protect forks, get sign

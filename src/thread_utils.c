@@ -48,64 +48,82 @@ to avoid any philosopher from claiming to be taking an already holding fork*/
 	return (1);
 }
 
-bool	not_dead(t_philo *p) // print_or_die
-/*KILL EVERYONE */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+bool	not_dead(t_philo *p)
+/*KILL EVERYONE 
+				Dead		Not dead
+Someone died    10us	 	ret 0
+			  to print
+Nobody died	 print death 	ret 1	*/
 {
-	if (pthread_mutex_lock(p->g_lock))
-		return (0);
-	else if ((p->timings.dead_time >= elaps_time(p->last_meal)) && !p->someone_died)
+	if (p->timings.dead_time < elaps_time(p->last_meal))
 	{
-		if (pthread_mutex_unlock(p->g_lock))
-			return (0);
-		return (1);
-	}
-	else
-	{
-		// p->nobody_died = 0; //??
-		// *p->someone_died = ft_gettime(); // or
-		*p->someone_died = elaps_time(p->timings.init_t);
+		if (pthread_mutex_lock(p->deathlock))
+			return (set_error(p->err, 8));
+		*p->someone_died = ft_gettime();
 		p->state = DEAD;
-		if (pthread_mutex_unlock(p->g_lock))
-			return (0);
+		if (pthread_mutex_unlock(p->deathlock))
+			return (set_error(p->err, 8));
 		printf(RED);
 		ft_printmsg(p, "has died.");
-		printf(CLR_DFT);
 		return (0);
 	}
+	return (1);
 }
 
-bool	eaten_enough(t_philo *p)
-/*experimental, working for now*/
-{
-	if (p->timings.num_meals && p->meals_eaten >= p->timings.num_meals)
-	{
-		pthread_mutex_lock(p->g_lock);
-		p->state = DEAD;
-		*p->someone_died = elaps_time(p->timings.init_t); // ft_do_dead...
-		// p->nobody_died = 0;
-		pthread_mutex_unlock(p->g_lock);
-		return (1);
-	}
-	return (0);
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 bool	ft_printmsg(t_philo *p, char *msg)
 {
 	long long	time;
-	unsigned long long	time_since_death;
+	long long	time_since_death;
 
 	time_since_death = elaps_time(*p->someone_died);
 	time = elaps_time(p->timings.init_t);
-	pthread_mutex_lock(p->g_lock);
-	if ((p->state != DEAD) && p->nobody_died)
+	pthread_mutex_lock(p->printlock);
+	if (*p->someone_died)
 	{
 		if (time_since_death <= 10 && time_since_death > 0)
-			printf("%lld Philosopher %d %s\n", *p->someone_died + time_since_death, p->N, msg);
+			printf("%lld Philosopher %d %s\n",
+					*p->someone_died + time_since_death, p->N, msg);
 		p->state = SOMEONE_DIED;
-		pthread_mutex_unlock(p->g_lock);
+		pthread_mutex_unlock(p->printlock);
+		printf(CLR_DFT);
 		return (0);
 	}
 	printf("%lld Philosopher %d %s\n", time, p->N, msg);
-	pthread_mutex_unlock(p->g_lock);
+	pthread_mutex_unlock(p->printlock);
+	printf(CLR_DFT);
 	return (1);
 }
