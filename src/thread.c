@@ -127,6 +127,5 @@ void	*ft_thread(void *philo)
 		else if (p->state == THINKING)
 			ft_eat(p);
 	}
-	// return (&p->err);
 	return (NULL);
 }

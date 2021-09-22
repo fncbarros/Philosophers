@@ -1,4 +1,7 @@
 Log:
+        NOT DYING FAST ENOUGH;
+        restructure ft_eat;
+        correct time (1 usec);
         printing out of control
         err return needs better handling
         time to die "counter", starvation "counter" (how to test time elapsed between death and "death declared")

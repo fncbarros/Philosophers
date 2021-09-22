@@ -42,7 +42,7 @@ int	set_error(int *ptr, int err) // or mutex and point to err element in params 
 
 int	ft_printerr(int n)
 {
-	// printf(YELLOW);
+	printf(YELLOW);
 	if (n == 1)
 	{
 		printf("Usage: ./philo <number_of_philosophers> <time_to_die> ");
@@ -64,7 +64,10 @@ int	ft_printerr(int n)
 	else if (n == 8)
 		write(2, "Mutex returned error!\n", 22);
 	else
+	{
+		printf(CLR_DFT);
 		return (-1);
+	}
 	printf(CLR_DFT);
 	return (n);
 }

@@ -109,6 +109,7 @@ bool	ft_printmsg(t_philo *p, char *msg)
 {
 	long long	time;
 	long long	time_since_death;
+	static bool	death;
 
 	time_since_death = elaps_time(*p->someone_died);
 	time = elaps_time(p->timings.init_t);
@@ -121,19 +122,24 @@ bool	ft_printmsg(t_philo *p, char *msg)
 	// }
 	// /*------------------->DEBUG<-----------------*/
 
-	pthread_mutex_lock(p->printlock);
-	if (*p->someone_died)
+	// pthread_mutex_lock(p->printlock);
+	pthread_mutex_lock(p->deathlock);
+	if (!death && p->state == DEAD)
+		death ^= 1;
+	else if (*p->someone_died)
 	{
 		if (p->state == DEAD && time_since_death <= 10 && time_since_death > 0)
 			printf("%lld Philosopher %d %s\n",
 					*p->someone_died + time_since_death, p->N, msg);
 		p->state = DEAD;
-		pthread_mutex_unlock(p->printlock);
+		// pthread_mutex_unlock(p->printlock);
+		pthread_mutex_unlock(p->deathlock);
 		printf(CLR_DFT);
 		return (0);
 	}
 	printf("%lld Philosopher %d %s\n", time, p->N, msg);
-	pthread_mutex_unlock(p->printlock);
+	// pthread_mutex_unlock(p->printlock);
+	pthread_mutex_unlock(p->deathlock);
 	printf(CLR_DFT);
 	return (1);
 }

@@ -28,7 +28,7 @@ static t_philo	*init_philo(t_params *params)
 	while (++i < params->philo_num)
 	{
 		p[i].N = i + 1;
-		p[i].state = THINKING;
+		// p[i].state = THINKING;
 		p[i].timings = params->timings;
 		p[i].meals_eaten = 0;
 		params->fork[i].is_taken = 0;
