@@ -117,7 +117,8 @@ void	*ft_thread(void *philo)
 	while (not_dead(p) && !*p->someone_died)
 	{
 		/*starvation check*/
-		if (p->timings.num_meals && p->meals_eaten >= p->timings.num_meals)
+		if (p->timings.num_meals &&
+				p->meals_eaten >= p->timings.num_meals)
 			break ;
 		if (p->state == EATING)
 			ft_sleep(p);
