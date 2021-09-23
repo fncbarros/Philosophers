@@ -12,60 +12,6 @@
 
 #include "philo.h"
 
-bool	try_get_fork(t_fork *fork)
-/* Need condition in case there's but 1 fork
-Not sure if it protects anything outside function (whats the point then if no var??)*/
-{
-	if (pthread_mutex_lock(&fork->lock))
-		return (0);
-	if (fork->is_taken)
-	{
-		if (pthread_mutex_unlock(&fork->lock))
-			return (0);
-		return (0);
-	}
-	fork->is_taken = 1;
-	if (pthread_mutex_unlock(&fork->lock))
-		return (0);
-	return (1);
-}
-
-bool	release_fork(t_fork *fork)
-/*l.:42 if <fork> is the 2nd to be put down
-<second_fork> will be 0 after this operation
-to avoid any philosopher from claiming to be taking an already holding fork*/
-{
-	static bool	second_fork;
-
-	if (pthread_mutex_lock(&fork->lock))
-		return (0);
-	fork->is_taken = 0;
-	second_fork ^= 1;
-	if (!second_fork)
-		return (1);
-	if (pthread_mutex_unlock(&fork->lock))
-		return (0);
-	return (1);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 bool	not_dead(t_philo *p)
 /*KILL EVERYONE
 				Dead		Not dead

@@ -1,35 +1,29 @@
 Log:
         NOT DYING FAST ENOUGH;
         restructure ft_eat;
-        correct time (1 usec);
-        printing out of control
-        err return needs better handling
+        correct time (1 usec delay);
+        printer out of control
         time to die "counter", starvation "counter" (how to test time elapsed between death and "death declared")
         ("if a philosopher doesn’t start eating ’time_to_die’ milliseconds after starting his last meal or the beginning of the simulation, it dies")
-    --> check time_util, philo_thread && philo_thread_util (and print_state_or_kill)
+    --> check time_util, philo_thread && philo_thread_util
         1 philosopher case (2 forks) not working
         print only when both forks acquired for clarity
         static bool "a_philo_has_died" on printer function
         "general mutex" specifically for printing to avoid "scrambling or intertwinning"
-        time to die "counter", starvation "counter" (how to test time elapsed
-        between death and "death declared")
 
         Preventing dead_lock:
         Even philos take right fork first, odd ones take left one first;
-        Priority for taking fork given to thread with the biggest wait time and is not sleeping (so "grab" the mutex right away ??)
-        Number of times to eat
+        Priority for taking fork given to thread with the biggest wait time and is not sleeping
 
         if (2 * time_to_eat > curr_time - last_meal)
             no lock
 
         LLONG_MAX = 9223372036854775807
         ULLONG_MAX = 18446744073709551615
+        4 310 200 100
 
 ?:
-Mutexes protect forks, get sign
 Queue for holding forks?
-Any use for return value of thread (2nd param of pthread_join)?
-What data do I need to pass to threaded function? mutex/fork, timings, philo num(id), state, ...?
 Error handling in threaded function? (3rd loop in main)
 if any pthread or gettimeofday ft fails, should I retry?
 Should I register initial time once for all or once for each as I create threads?
