@@ -19,6 +19,7 @@ Log:
 
         LLONG_MAX = 9223372036854775807
         ULLONG_MAX = 18446744073709551615
+        INT_MAX = 2147483647
         4 310 200 100
 
 ?:
@@ -253,3 +254,15 @@ void    ft_eat(t_philo *p)
 	}
 }
 */
+
+long long	elaps_time_tv(t_tv init_time)
+{
+	t_tv		curr_time;
+	long long	elapsed;
+
+	if (gettimeofday(&curr_time, 0))
+		return (0);
+	elapsed = (curr_time.tv_sec - init_time.tv_sec) * 1000000;
+	elapsed += (curr_time.tv_usec - init_time.tv_usec);
+	return (elapsed);
+}

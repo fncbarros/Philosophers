@@ -23,6 +23,7 @@ Nobody died	 | print death 		 ret 1
 	if (p->timings.dead_time < elaps_time(p->last_meal))
 	{
 		p->state = DEAD;
+		printf("time : %lld died A %d\n",elaps_time(p->timings.init_t),p->N);
 		ft_printmsg(p, "died");
 		return (0);
 	}
@@ -48,8 +49,6 @@ bool	ft_printmsg(t_philo *p, char *msg)
 
 	time_since_death = elaps_time(*p->someone_died);
 	time = elaps_time(p->timings.init_t);
-	if (time > 0)
-		time--;
 	if (pthread_mutex_lock(p->printlock))
 		return (set_error(p->err, 8));
 	if (*p->someone_died)
@@ -78,41 +77,44 @@ bool	ft_printmsg(t_philo *p, char *msg)
 
 bool	try_get_fork(t_fork *f) // ERR CHECKING
 {
-	
 	pthread_mutex_lock(&f->lock);
-	if (!f->is_taken)
+	/*if (!f->is_taken)
 	{
 		f->is_taken = 1;
 		pthread_mutex_unlock(&f->lock);
 		return (1);
-	}
+	}*/
 	
-	pthread_mutex_unlock(&f->lock);
-	return (0);
+	// pthread_mutex_unlock(&f->lock);
+	return (1);//alterado para 1 era 0
 }
 
 bool	release_fork(t_fork *f) // ERR CHECKING
 {
 	
-	pthread_mutex_lock(&f->lock);
-	f->is_taken = 0;
+	// pthread_mutex_lock(&f->lock);
+	// f->is_taken = 0;
 	pthread_mutex_unlock(&f->lock);
 	return (0); // ...
 }
 
-
 bool	ft_take_forks(t_philo *p) // ERR CHECKING
 {
-
+	if (!p->l_fork)
+		return (0);
+	if (2 * p->timings.meal_time > elaps_time(p->last_meal))
+		return (0);
 	if (try_get_fork(p->r_fork))
 	{
 		if (try_get_fork(p->l_fork))
 		{
 			ft_printmsg(p, "has taken a fork");
 			ft_printmsg(p, "has taken a fork");
+			// release_fork(p->r_fork);
+			// release_fork(p->l_fork);
 			return (1);
 		}
-		release_fork(p->r_fork);
+		// release_fork(p->r_fork);
 	}
 	return (0);
 }

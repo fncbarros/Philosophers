@@ -15,9 +15,15 @@
 void	ft_sleep(t_philo *p)
 /*passing whole struct or just status and TIMMING ?????????*/
 {
+	// if (elaps_time(p->last_meal) + p->timings.sleep_time > p->timings.dead_time)
+	// {
+	// 	release_fork(p->r_fork);
+	// 	release_fork(p->l_fork);
+	// 	return ;
+	// }
 	p->state = SLEEPING;
-	if (!ft_printmsg(p, "is sleeping"))
-		return ;
+	ft_printmsg(p, "is sleeping");
+	// ft_printmsg(p, "is sleeping");
 	ft_usleep(p->timings.sleep_time, p);
 }
 
@@ -31,17 +37,19 @@ void	ft_eat(t_philo *p)
 	lock the whole thing?
 	ERROR HANDLING*/
 {
+	//testes
+	// long long temp =  ft_gettime();//ft_gettime();
+	//endtestes
 	if (ft_take_forks(p))
 	{
 		p->state = EATING;
-		if (!ft_printmsg(p, "is eating"))
-			return ;
+		p->meals_eaten++;
+		ft_printmsg(p, "is eating");
+		p->last_meal = ft_gettime();
+		// p->last_meal = temp;
+		ft_usleep(p->timings.meal_time, p);
 		release_fork(p->r_fork);
 		release_fork(p->l_fork);
-		p->meals_eaten++;
-		p->last_meal = ft_gettime();
-		ft_usleep(p->timings.meal_time, p);
-		// ft_printmsg(p, "has dropped both forks");
 	}
 }
 
@@ -63,8 +71,9 @@ void	*ft_thread(void *philo)
 		return (NULL);
 	}
 	p->last_meal = p->timings.init_t;
-	while (not_dead(p) && !*p->someone_died /*&& !p->err*/)
+	while (not_dead(p) && !*p->someone_died /*&& !*p->err*/)
 	{
+		//usleep(10);
 		if (p->state == EATING)
 			ft_sleep(p);
 		else if (p->state == SLEEPING)
@@ -73,7 +82,11 @@ void	*ft_thread(void *philo)
 		{
 			if (p->timings.num_meals
 				&& p->meals_eaten >= p->timings.num_meals)
-				break ;
+				{
+					// printf("FINAL NUM OF MEALS %d\n", p->meals_eaten);
+					break ;
+				}
+			
 			ft_eat(p);
 		}
 	}
