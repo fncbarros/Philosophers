@@ -15,9 +15,19 @@
 void	ft_sleep(t_philo *p)
 /*passing whole struct or just status and TIMMING ?????????*/
 {
+	/*------------TEST------------------*/
+	pthread_mutex_lock(&p->r_fork->lock);
+	pthread_mutex_lock(&p->l_fork->lock);
+	p->r_fork->is_taken = 0;
+	p->l_fork->is_taken = 0;
+	/*------------TEST------------------*/
 	p->state = SLEEPING;
 	if (!ft_printmsg(p, "is sleeping"))
 		return ;
+	/*------------TEST------------------*/
+	pthread_mutex_unlock(&p->r_fork->lock);
+	pthread_mutex_unlock(&p->l_fork->lock);
+	/*------------TEST------------------*/
 	ft_usleep(p->timings.sleep_time, p);
 }
 
@@ -36,8 +46,8 @@ void	ft_eat(t_philo *p)
 		p->state = EATING;
 		if (!ft_printmsg(p, "is eating"))
 			return ;
-		release_fork(p->r_fork);
-		release_fork(p->l_fork);
+		// release_fork(p->r_fork);
+		// release_fork(p->l_fork);
 		p->meals_eaten++;
 		p->last_meal = ft_gettime();
 		ft_usleep(p->timings.meal_time, p);
@@ -63,17 +73,19 @@ void	*ft_thread(void *philo)
 		return (NULL);
 	}
 	p->last_meal = p->timings.init_t;
-	while (not_dead(p) && !*p->someone_died /*&& !p->err*/)
+	while (not_dead(p) /*&& !*p->someone_died *//*&& !p->err*/)
 	{
 		if (p->state == EATING)
+		{
 			ft_sleep(p);
+		}
 		else if (p->state == SLEEPING)
 			ft_think(p);
 		else if (p->state == THINKING)
 		{
 			if (p->timings.num_meals
 				&& p->meals_eaten >= p->timings.num_meals)
-				break ;
+					break ;
 			ft_eat(p);
 		}
 	}

@@ -43,9 +43,8 @@ void	ft_usleep(int time, t_philo *p)
 	{
 		if (p->timings.dead_time < elaps_time(p->last_meal))
 		{
-			printf("MORTE B\n");
 			p->state = DEAD;
-			ft_printmsg(p, "died");
+			// ft_printmsg(p, "died");
 			return ;
 		}
 	}

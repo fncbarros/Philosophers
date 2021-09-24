@@ -61,7 +61,9 @@ bool	ft_printmsg(t_philo *p, char *msg)
 	if (!*p->someone_died && p->state == DEAD)
 		*p->someone_died = ft_gettime();
 
-/*	if (time_since_death > 10)
+/*	time to print more deaths
+
+	if (time_since_death > 10)
 	{
 		// printf(CLR_DFT);
 		if (pthread_mutex_unlock(p->printlock))
@@ -103,7 +105,8 @@ bool	release_fork(t_fork *f) // ERR CHECKING
 
 bool	ft_take_forks(t_philo *p) // ERR CHECKING
 {
-
+	if (!p->l_fork)
+		return (0);
 	if (try_get_fork(p->r_fork))
 	{
 		if (try_get_fork(p->l_fork))
