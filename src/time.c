@@ -24,37 +24,32 @@ long long	ft_gettime(void)
 
 long long	elaps_time(long long init_time)
 {
-	// // t_tv		curr_time;
-	// long long	elapsed;
+	long long	curr_time;
 
-	// elapsed = ft_gettime() - init_time;
-	// // if (gettimeofday(curr_time))
-	// // 	return (0);
-	// // elapsed = curr_time.tv_sec * 1000000 + curr_time.tv_usec - init_time;
-	// // elapsed += curr_time.tv_usec / 1000 - init_time;
-	// return (elapsed);
-	if (!init_time)
+	curr_time = ft_gettime();
+	if (!init_time || !curr_time)
 		return (0);
-	return (ft_gettime() - init_time);
+	return (curr_time - init_time);
 }
 
-long long	elaps_time_tv(t_tv init_time)
-{
-	t_tv		curr_time;
-	long long	elapsed;
+// long long	elaps_time_tv(t_tv init_time)
+// {
+// 	t_tv		curr_time;
+// 	long long	elapsed;
 
-	if (gettimeofday(&curr_time, 0))
-		return (0);
-	elapsed = (curr_time.tv_sec - init_time.tv_sec) * 1000000;
-	elapsed += curr_time.tv_usec - init_time.tv_usec;
-	return (elapsed);
-}
+// 	if (gettimeofday(&curr_time, 0))
+// 		return (0);
+// 	elapsed = (curr_time.tv_sec - init_time.tv_sec) * 1000000;
+// 	elapsed += curr_time.tv_usec - init_time.tv_usec;
+// 	return (elapsed);
+// }
 
 void	ft_usleep(int time)
 {
 	long long	curr;
 
 	curr = ft_gettime();
-	while (ft_gettime() - curr < time)
+	usleep(time - time / 30);
+	while (ft_gettime() - curr <= time)
 	 	continue ;
 }

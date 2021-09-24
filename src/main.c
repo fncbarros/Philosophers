@@ -15,6 +15,10 @@
 #include "ft_error.h" // ...
 
 int	main(int argc, char **argv)
+/*l.26: EARLY ERROR CHECKING
+  l.29: INITIALIZING ARGUMENTS
+  l.34: CREATING MUTEXES
+  l.36: CREATING THREADS*/
 {
 	t_philo		*philo;
 	t_params	params;
@@ -22,22 +26,13 @@ int	main(int argc, char **argv)
 
 	philo = NULL;
 	ret = 0;
-
-	/*-------------TMP--------------*/
-	// DEBUG(printf("Debug mode on\n");)
-	/*-------------TMP--------------*/
-
-	// EARLY ERROR CHECKING
 	if (!argcheck(argc, argv))
 		return (ft_printerr(1));
-	// INITIALIZING ARGUMENTS
 	philo = init_structs(argv, &params);
 	if (!philo)
 		return (ft_printerr(2));
-	// CREATING MUTEXES
 	if (!mutex_init(&params, philo, -1))
 		return (ft_printerr(3));
-	// CREATING THREADS
 	ret = init_threads(params.philo_num, philo, -1);
 	if (!ret)
 		ret = params.retnum;

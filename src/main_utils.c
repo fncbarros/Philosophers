@@ -28,7 +28,6 @@ static t_philo	*init_philo(t_params *params)
 	while (++i < params->philo_num)
 	{
 		p[i].N = i + 1;
-		// p[i].state = THINKING;
 		p[i].timings = params->timings;
 		p[i].meals_eaten = 0;
 		params->fork[i].is_taken = 0;
@@ -43,7 +42,8 @@ static t_philo	*init_philo(t_params *params)
 }
 
 t_philo	*init_structs(char **argv, t_params *params)
-/*2 forks for 1 philosopher case*/
+/*l.57-59: allocating memory for array of philosophers and t_mutex structs aka forks and checking for success
+  l.61: initializing philosophers struct and returning pointer to it*/
 {
 	params->philo_num = ft_atoi(argv[1]);
 	params->timings.dead_time = ft_atoi(argv[2]);
@@ -55,11 +55,9 @@ t_philo	*init_structs(char **argv, t_params *params)
 		params->timings.num_meals = ft_atoi(argv[5]);
 	else
 		params->timings.num_meals = 0;
-	// allocating memory for array of philosophers and t_mutex structs aka forks and checking for success
 	params->fork = calloc(params->philo_num, sizeof(t_fork));
 	if (!params->fork)
 		return (NULL);
-	// initializing philosophers infos
 	return (init_philo(params));
 }
 
@@ -92,32 +90,8 @@ bool	mutex_init(t_params *params, t_philo *philo, int i)
 	return (1);
 }
 
-int	free_everything(t_params *params, t_philo *philo, int i, int ret)
-{
-	ret = pthread_mutex_destroy(&params->printlock);
-	ret = pthread_mutex_destroy(&params->deathlock);
-	/*-------DEBUGGING-------*/
-	printf("ERROR g_lock %d\n", ret);
-	/*-------DEBUGGING-------*/
-
-	while (++i < params->philo_num)
-	{
-		ret = pthread_mutex_destroy(&params->fork[i].lock);
-		/*-------DEBUGGING-------*/
-		printf ("ERROR %d\n", ret);
-		if (ret)
-			ret = 6;
-		/*-------DEBUGGING-------*/
-	}
-	free(philo);
-	free(params->fork);
-	return (ret);
-}
-
 int	init_threads(int philo_num, t_philo *philo, int i)
 {
-	// void	*ret;
-
 	while (++i < philo_num)
 	{
 		if (pthread_create(&philo[i].th, NULL, &ft_thread, &philo[i]))
@@ -126,8 +100,19 @@ int	init_threads(int philo_num, t_philo *philo, int i)
 	i = -1;
 	while (++i < philo_num)
 	{
-		if (pthread_join(philo[i].th, NULL/*&ret*/))
+		if (pthread_join(philo[i].th, NULL))
 			return (5);
 	}
-	return (0);/*(*(int *)ret);*/
+	return (0);
+}
+
+int	free_everything(t_params *params, t_philo *philo, int i, int ret)
+{
+	ret = pthread_mutex_destroy(&params->printlock);
+	ret = pthread_mutex_destroy(&params->deathlock);
+	while (++i < params->philo_num)
+		ret = pthread_mutex_destroy(&params->fork[i].lock);
+	free(philo);
+	free(params->fork);
+	return (ret);
 }

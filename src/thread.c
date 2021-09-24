@@ -19,66 +19,28 @@ void	ft_sleep(t_philo *p)
 	if (!ft_printmsg(p, "is sleeping."))
 		return ;
 	ft_usleep(p->timings.sleep_time);
-	// usleep((useconds_t)p->timings.sleep_time);
 }
 
 void	ft_eat(t_philo *p)
 /*if odd take right one first
-	release first if second taken then return (for dead checking)*/
+	release first if second taken then return (for dead checking)
+
+	if (2 * meal_time > curr - last_meal)
+		no lock
+
+	lock the whole thing?
+	ERROR HANDLING*/
 {
-	if (!p->r_fork->is_taken && !p->l_fork->is_taken)
+	if (ft_take_forks(p))
 	{
-		pthread_mutex_lock(&p->r_fork->lock);
-		p->r_fork->is_taken = 1;
-		if (!ft_printmsg(p, "has grabbed a fork."))
-		{
-			pthread_mutex_unlock(&p->r_fork->lock);
-			pthread_mutex_unlock(&p->l_fork->lock);
-			return ;
-		}
-		if (p->l_fork->is_taken) // case philo num == 1
-		{
-			p->r_fork->is_taken = 0;
-			ft_printmsg(p, "has dropped a fork.");
-			pthread_mutex_unlock(&p->r_fork->lock);
-			pthread_mutex_unlock(&p->l_fork->lock);
-			return ;
-		}
-		pthread_mutex_lock(&p->l_fork->lock);
-		p->l_fork->is_taken = 1;
-		if (!ft_printmsg(p, "has grabbed a fork."))
-		{
-			pthread_mutex_unlock(&p->r_fork->lock);
-			pthread_mutex_unlock(&p->l_fork->lock);
-			return ;
-		}
 		p->state = EATING;
-		if (!ft_printmsg(p, "is eating."))
-		{
-			pthread_mutex_unlock(&p->r_fork->lock);
-			pthread_mutex_unlock(&p->l_fork->lock);
-			return ;
-		}
+		ft_printmsg(p, "is eating.");
 		p->meals_eaten++;
 		p->last_meal = ft_gettime();
-		if (!p->last_meal)
-		{
-			pthread_mutex_unlock(&p->r_fork->lock);
-			pthread_mutex_unlock(&p->l_fork->lock);
-			set_error(p->err, 7);
-			return ;
-		}
 		ft_usleep(p->timings.meal_time);
-		p->r_fork->is_taken = 0;
-		p->l_fork->is_taken = 0;
-		if (!ft_printmsg(p, "has dropped both forks."))
-		{
-			pthread_mutex_unlock(&p->r_fork->lock);
-			pthread_mutex_unlock(&p->l_fork->lock);
-			return ;
-		}
-		if (pthread_mutex_unlock(&p->r_fork->lock) || pthread_mutex_unlock(&p->l_fork->lock))
-			return ;
+		release_fork(p->r_fork);
+		release_fork(p->l_fork);
+		ft_printmsg(p, "has dropped both forks");
 	}
 }
 
@@ -86,21 +48,7 @@ void	ft_think(t_philo *p)
 {
 	p->state = THINKING;
 	ft_printmsg(p, "is thinking.");
-	// time left ????????
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void	*ft_thread(void *philo)
 {
@@ -114,11 +62,10 @@ void	*ft_thread(void *philo)
 		return (NULL);
 	}
 	p->last_meal = p->timings.init_t;
-	while (not_dead(p) && !*p->someone_died)
+	while (not_dead(p) && !*p->someone_died /*&& !p->err*/)
 	{
-		/*starvation check*/
-		if (p->timings.num_meals &&
-				p->meals_eaten >= p->timings.num_meals)
+		if (p->timings.num_meals
+			&& p->meals_eaten >= p->timings.num_meals)
 			break ;
 		if (p->state == EATING)
 			ft_sleep(p);

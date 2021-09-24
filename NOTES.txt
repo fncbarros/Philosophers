@@ -6,7 +6,6 @@ Log:
         time to die "counter", starvation "counter" (how to test time elapsed between death and "death declared")
         ("if a philosopher doesn’t start eating ’time_to_die’ milliseconds after starting his last meal or the beginning of the simulation, it dies")
     --> check time_util, philo_thread && philo_thread_util
-        1 philosopher case (2 forks) not working
         print only when both forks acquired for clarity
         static bool "a_philo_has_died" on printer function
         "general mutex" specifically for printing to avoid "scrambling or intertwinning"
@@ -15,7 +14,7 @@ Log:
         Even philos take right fork first, odd ones take left one first;
         Priority for taking fork given to thread with the biggest wait time and is not sleeping
 
-        if (2 * time_to_eat > curr_time - last_meal)
+        if (2 * meal_time > curr - last_meal)
             no lock
 
         LLONG_MAX = 9223372036854775807
@@ -192,40 +191,65 @@ void    ft_eat(t_philo *p)
 	pthread_mutex_unlock(&p->l_fork->lock); // hate it ...
 }
 
-[thread_utils.c]
+2nd vers
 
-bool	try_get_fork(t_fork *fork)
-/* Need condition in case there's but 1 fork
-Not sure if it protects anything outside function (whats the point then if no var??)*/
+/*	void	ft_eat(t_philo *p)
 {
-	if (pthread_mutex_lock(&fork->lock))
-		return (0);
-	if (fork->is_taken)
+	if (!p->r_fork->is_taken && !p->l_fork->is_taken)
 	{
-		if (pthread_mutex_unlock(&fork->lock))
-			return (0);
-		return (0);
+		pthread_mutex_lock(&p->r_fork->lock);
+		p->r_fork->is_taken = 1;
+		if (!ft_printmsg(p, "has grabbed a fork."))
+		{
+			pthread_mutex_unlock(&p->r_fork->lock);
+			pthread_mutex_unlock(&p->l_fork->lock);
+			return ;
+		}
+		if (p->l_fork->is_taken) // case philo num == 1
+		{
+			p->r_fork->is_taken = 0;
+			ft_printmsg(p, "has dropped a fork.");
+			pthread_mutex_unlock(&p->r_fork->lock);
+			pthread_mutex_unlock(&p->l_fork->lock);
+			return ;
+		}
+		pthread_mutex_lock(&p->l_fork->lock);
+		p->l_fork->is_taken = 1;
+		if (!ft_printmsg(p, "has grabbed a fork."))
+		{
+			pthread_mutex_unlock(&p->r_fork->lock);
+			pthread_mutex_unlock(&p->l_fork->lock);
+			return ;
+		}
+
+
+		p->state = EATING;
+		if (!ft_printmsg(p, "is eating."))
+		{
+			pthread_mutex_unlock(&p->r_fork->lock);
+			pthread_mutex_unlock(&p->l_fork->lock);
+			return ;
+		}
+		p->meals_eaten++;
+		p->last_meal = ft_gettime();
+		if (!p->last_meal)
+		{
+			pthread_mutex_unlock(&p->r_fork->lock);
+			pthread_mutex_unlock(&p->l_fork->lock);
+			set_error(p->err, 7);
+			return ;
+		}
+		ft_usleep(p->timings.meal_time);
+		p->r_fork->is_taken = 0;
+		p->l_fork->is_taken = 0;
+		if (!ft_printmsg(p, "has dropped both forks."))
+		{
+			pthread_mutex_unlock(&p->r_fork->lock);
+			pthread_mutex_unlock(&p->l_fork->lock);
+			return ;
+		}
+		if (pthread_mutex_unlock(&p->r_fork->lock) || pthread_mutex_unlock(&p->l_fork->lock))
+			return ;
 	}
-	fork->is_taken = 1;
-	if (pthread_mutex_unlock(&fork->lock))
-		return (0);
-	return (1);
 }
-
-bool	release_fork(t_fork *fork)
-/*l.:42 if <fork> is the 2nd to be put down
-<second_fork> will be 0 after this operation
-to avoid any philosopher from claiming to be taking an already holding fork*/
-{
-	static bool	second_fork;
-
-	if (pthread_mutex_lock(&fork->lock))
-		return (0);
-	fork->is_taken = 0;
-	second_fork ^= 1;
-	if (!second_fork)
-		return (1);
-	if (pthread_mutex_unlock(&fork->lock))
-		return (0);
-	return (1);
-}
+*/

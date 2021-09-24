@@ -122,8 +122,8 @@ void	*ft_thread(void *philo);
 /*thread_utils.c*/
 bool	try_get_fork(t_fork *fork);
 bool	release_fork(t_fork *fork);
+bool	ft_take_forks(t_philo *p);
 bool	not_dead(t_philo *p);
-bool	ate_enough(t_philo *p);
 bool	ft_printmsg(t_philo *p, char *msg);
 
 // /*err.c*/
