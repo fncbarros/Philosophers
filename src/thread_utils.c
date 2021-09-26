@@ -17,7 +17,7 @@ bool	not_dead(t_philo *p)
 				 ______		   __________
 Someone died |    10us	 		 ret 0
 			    to print
-Nobody died	 | print death 		 ret 1	
+Nobody died	 | print death 		 ret 1
 */
 {
 	if (p->timings.dead_time < elaps_time(p->last_meal))
@@ -44,9 +44,9 @@ bool	ft_printmsg(t_philo *p, char *msg)
   MAYBE JUST 1 LOCK*/
 {
 	long long	time;
-	long long	time_since_death;
+	// long long	time_since_death;
 
-	time_since_death = elaps_time(*p->someone_died);
+	// time_since_death = elaps_time(*p->someone_died);
 	time = elaps_time(p->timings.init_t);
 	if (time > 0)
 		time--;
@@ -80,7 +80,7 @@ bool	ft_printmsg(t_philo *p, char *msg)
 
 bool	try_get_fork(t_fork *f) // ERR CHECKING
 {
-	
+
 	pthread_mutex_lock(&f->lock);
 	if (!f->is_taken)
 	{
@@ -88,14 +88,14 @@ bool	try_get_fork(t_fork *f) // ERR CHECKING
 		pthread_mutex_unlock(&f->lock);
 		return (1);
 	}
-	
+
 	pthread_mutex_unlock(&f->lock);
 	return (0);
 }
 
 bool	release_fork(t_fork *f) // ERR CHECKING
 {
-	
+
 	pthread_mutex_lock(&f->lock);
 	f->is_taken = 0;
 	pthread_mutex_unlock(&f->lock);
