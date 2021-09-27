@@ -1,15 +1,7 @@
 Log:
-		Case 10 400 100 100 7 and 10 400 100 100 7 dying before time
-        NOT DYING FAST ENOUGH;
-        restructure ft_eat;
-        correct time (1 usec delay);
-        printer out of control
-        time to die "counter", starvation "counter" (how to test time elapsed between death and "death declared")
+	---->Cases 5 800 200 200 7 and 20 400 100 100 7 showing inconstant behaviour
         ("if a philosopher doesn’t start eating ’time_to_die’ milliseconds after starting his last meal or the beginning of the simulation, it dies")
-    --> check time_util, philo_thread && philo_thread_util
         print only when both forks acquired for clarity
-        static bool "a_philo_has_died" on printer function
-        "general mutex" specifically for printing to avoid "scrambling or intertwinning"
 
         Preventing dead_lock:
         Even philos take right fork first, odd ones take left one first;
@@ -26,7 +18,6 @@ Log:
 ?:
 Queue for holding forks?
 Error handling in threaded function? (3rd loop in main)
-if any pthread or gettimeofday ft fails, should I retry?
 Should I register initial time once for all or once for each as I create threads?
 
                             ---------TIME---------
