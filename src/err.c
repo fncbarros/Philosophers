@@ -34,7 +34,7 @@ int	argcheck(int argc, char **argv)
 	return (1);
 }
 
-int	set_error(int *ptr, int err) // or mutex and point to err element in params ... [!!]
+int	set_error(int *ptr, int err)
 {
 	*ptr = err;
 	return (0);
@@ -64,10 +64,6 @@ int	ft_printerr(int n)
 	else if (n == 8)
 		write(2, "Mutex returned error!\n", 22);
 	else
-	{
-		printf(CLR_DFT);
 		return (-1);
-	}
-	printf(CLR_DFT);
 	return (n);
 }

@@ -11,15 +11,7 @@
 /* ************************************************************************** */
 
 #ifndef PHILO_H
-#define PHILO_H
-
-/*------TMP------*/
-# ifdef DEBUGMODE
-#  define DEBUG(x) x
-# else
-#  define DEBUG(x)
-# endif
-/*------TMP------*/
+# define PHILO_H
 
 # include <pthread.h>
 # include <stdio.h>
@@ -30,34 +22,29 @@
 # include <stdbool.h>
 # include <stdint.h>
 
-typedef pthread_mutex_t t_mutex;
-typedef	struct timeval t_tv;
+typedef pthread_mutex_t	t_mutex;
 
-#define USECS 100000
-
-#define RED "\033[0;31m"
-#define YELLOW "\033[0;33m"
-#define BLUE "\033[0;34m"
-#define GREEN "\033[0;32m"
-#define CLR_DFT "\033[0m"
+# define RED "\033[0;31m"
+# define YELLOW "\033[0;33m"
+# define BLUE "\033[0;34m"
+# define GREEN "\033[0;32m"
+# define CLR_DFT "\033[0m"
 
 /*arguments (excepting 1st)
   + initial time*/
-typedef enum	e_philo_state
+typedef enum e_philo_state
 {
 	THINKING,
 	EATING,
 	SLEEPING,
-	DEAD,
-	SOMEONE_DIED,
-	FULL // ...
+	DEAD
 }	t_philo_state;
 
 typedef struct s_timings
 {
 	long long	dead_time;
-	long		meal_time;
-	long		sleep_time;
+	long long	meal_time;
+	long long	sleep_time;
 	int			num_meals;
 	long long	init_t;
 }				t_timings;
@@ -68,21 +55,20 @@ typedef struct s_fork
 	t_mutex		lock;
 }	t_fork;
 
-typedef struct  s_philo
+typedef struct s_philo
 {
 	int				N;
 	pthread_t		th;
 	t_philo_state	state;
 	long long		last_meal;
 	int				meals_eaten;
-	t_timings 		timings;
+	t_timings		timings;
 	t_fork			*r_fork;
 	t_fork			*l_fork;
 	t_mutex			*printlock;
 	t_mutex			*deathlock;
 	long long		*someone_died;
 	int				*err;
-	// bool			*nobody_died;
 }	t_philo;
 
 /*parameters external to t_philo (sorta)
@@ -95,46 +81,43 @@ typedef struct  s_philo
 typedef struct s_params
 {
 	int			philo_num;
-	t_timings 	timings; // any use here?
+	t_timings	timings;
 	t_fork		*fork;
 	t_mutex		printlock;
 	t_mutex		deathlock;
 	long long	someone_died;
 	int			retnum;
-	// int			errnum; // for pthread errs
 }	t_params;
 
 /*main_utils.c*/
-// t_philo	*init_philo(t_params *params);
-t_philo	*init_structs(char **argv, t_params *params);
-bool	mutex_init(t_params *params, t_philo *philo, int i);
-int		free_everything(t_params *params, t_philo *philo, int i, int ret);
-int		init_threads(int philo_num, t_philo *philo, int i);
+t_philo		*init_structs(char **argv, t_params *params);
+bool		mutex_init(t_params *params, t_philo *philo, int i);
+int			free_everything(t_params *params, t_philo *philo, int i, int ret);
+int			init_threads(int philo_num, t_philo *philo, int i);
 
 /*utils.c*/
-bool	ft_isdigit(int c);
-int		ft_atoi(const char *str);
-bool	nobody_died(t_philo *p, int N);
+bool		ft_isdigit(int c);
+long long	ft_atoll(const char *str);
+bool		nobody_died(t_philo *p, int N);
 
 /*thread.c*/
-void	*ft_thread(void *philo);
+void		*ft_thread(void *philo);
 
 /*thread_utils.c*/
-bool	try_get_fork(t_fork *fork);
-bool	release_fork(t_fork *fork);
-bool	ft_take_forks(t_philo *p);
-bool	not_dead(t_philo *p);
-bool	ft_printmsg(t_philo *p, char *msg);
+bool		try_get_fork(t_fork *fork, int *err);
+bool		release_fork(t_fork *fork, int *err);
+bool		ft_take_forks(t_philo *p);
+bool		not_dead(t_philo *p);
+bool		ft_printmsg(t_philo *p, char *msg);
 
-// /*err.c*/
-// int		argcheck(int argc, char **argv);
-// int		ft_printerr(int n);
-int		set_error(int *ptr, int err);
+/*err.c*/
+int			set_error(int *ptr, int err);
+/*int		argcheck(int argc, char **argv);
+  int		ft_printerr(int n);*/
 
 /*time.c*/
 long long	ft_gettime(void);
 long long	elaps_time(long long init_time);
 void		ft_usleep(int time, t_philo *p);
-// void		ft_usleep(int time);
 
 #endif

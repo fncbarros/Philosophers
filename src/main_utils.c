@@ -13,12 +13,10 @@
 #include "philo.h"
 #include "ft_error.h"
 
-static t_philo	*init_philo(t_params *params)
+static t_philo	*init_philo(t_params *params, int i)
 {
 	t_philo	*p;
-	int		i;
 
-	i = -1;
 	p = calloc(params->philo_num, sizeof(t_philo));
 	if (!p)
 	{
@@ -47,20 +45,20 @@ t_philo	*init_structs(char **argv, t_params *params)
 /*l.57-59: allocating memory for array of philosophers and t_mutex structs aka forks and checking for success
   l.61: initializing philosophers struct and returning pointer to it*/
 {
-	params->philo_num = ft_atoi(argv[1]);
-	params->timings.dead_time = ft_atoi(argv[2]);
-	params->timings.meal_time = ft_atoi(argv[3]);
-	params->timings.sleep_time = ft_atoi(argv[4]);
+	params->philo_num = (int)ft_atoll(argv[1]);
+	params->timings.dead_time = ft_atoll(argv[2]);
+	params->timings.meal_time = ft_atoll(argv[3]);
+	params->timings.sleep_time = ft_atoll(argv[4]);
 	params->someone_died = 0;
 	params->retnum = 0;
 	if (argv[5])
-		params->timings.num_meals = ft_atoi(argv[5]);
+		params->timings.num_meals = (int)ft_atoll(argv[5]);
 	else
 		params->timings.num_meals = 0;
 	params->fork = calloc(params->philo_num, sizeof(t_fork));
 	if (!params->fork)
 		return (NULL);
-	return (init_philo(params));
+	return (init_philo(params, -1));
 }
 
 bool	mutex_init(t_params *params, t_philo *philo, int i)

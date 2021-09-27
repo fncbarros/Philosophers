@@ -14,12 +14,11 @@
 
 long long	ft_gettime(void)
 {
-	t_tv	t;
+	struct timeval	t;
 
 	if (gettimeofday(&t, NULL))
 		return (0);
 	return (t.tv_sec * 1000 + t.tv_usec / 1000);
-	// return (t.tv_sec * 1000000 + t.tv_usec);
 }
 
 long long	elaps_time(long long init_time)
@@ -44,7 +43,6 @@ void	ft_usleep(int time, t_philo *p)
 		if (p->timings.dead_time < elaps_time(p->last_meal))
 		{
 			p->state = DEAD;
-			// ft_printmsg(p, "died");
 			return ;
 		}
 	}

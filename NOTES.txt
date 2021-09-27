@@ -267,3 +267,17 @@ long long	elaps_time_tv(t_tv init_time)
 	elapsed += (curr_time.tv_usec - init_time.tv_usec);
 	return (elapsed);
 }
+
+/*	(on ft_printmsg) print death if it hasn't passed the 10us since first death:
+	long long	time_since_death;
+	...
+	time_since_death = elaps_time(*p->someone_died);
+	...
+	if (time_since_death > 10)
+	{
+		if (pthread_mutex_unlock(p->printlock))
+			return (set_error(p->err, 8));
+		return (0);
+	}
+	else if (!(*p->someone_died && p->state != DEAD))
+	...*/
