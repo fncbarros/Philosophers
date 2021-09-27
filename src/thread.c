@@ -15,21 +15,11 @@
 void	ft_sleep(t_philo *p)
 /*passing whole struct or just status and TIMMING ?????????*/
 {
-	if (pthread_mutex_lock(&p->r_fork->lock))
-		*p->err = 8;
-	if (pthread_mutex_lock(&p->l_fork->lock))
-		*p->err = 8;
-	p->r_fork->is_taken = 0;
-	p->l_fork->is_taken = 0;
-	p->state = SLEEPING;
 	if (!ft_printmsg(p, "is sleeping"))
 		return ;
-	if (pthread_mutex_unlock(&p->r_fork->lock))
-		*p->err = 8;
-	if (pthread_mutex_unlock(&p->l_fork->lock))
-		*p->err = 8;
-	if (*p->err)
-		return ;
+	release_fork(p->r_fork, p->err);
+	release_fork(p->l_fork, p->err);
+	p->state = SLEEPING;
 	ft_usleep(p->timings.sleep_time, p);
 }
 
