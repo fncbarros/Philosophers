@@ -92,8 +92,13 @@ bool	mutex_init(t_params *params, t_philo *philo, int i)
 
 int	init_threads(int philo_num, t_philo *philo, int i)
 {
+	long long	time;
+
+	time = ft_gettime();
 	while (++i < philo_num)
 	{
+		philo[i].timings.init_t = time;
+		philo[i].last_meal = time;
 		if (pthread_create(&philo[i].th, NULL, &ft_thread, &philo[i]))
 			return (4);
 	}

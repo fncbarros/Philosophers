@@ -1,5 +1,5 @@
 Log:
-	---->Cases 5 800 200 200 7 and 20 400 100 100 7 showing inconstant behaviour
+	---->Cases 5 800 200 200 7, 20 400 100 100 7 and 10 400 100 100 7 showing inconstant behaviour
         ("if a philosopher doesn’t start eating ’time_to_die’ milliseconds after starting his last meal or the beginning of the simulation, it dies")
         print only when both forks acquired for clarity
 

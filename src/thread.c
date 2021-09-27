@@ -55,13 +55,8 @@ void	ft_think(t_philo *p)
 void	*ft_thread(void *philo)
 {
 	t_philo				*p;
-	static long long	init;
 
 	p = (t_philo *)philo;
-	if (!init)
-		init = ft_gettime();
-	p->timings.init_t = init;
-	p->last_meal = p->timings.init_t;
 	while (not_dead(p) && !*p->err)
 	{
 		if (p->state == EATING)
