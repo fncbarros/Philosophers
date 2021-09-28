@@ -40,6 +40,7 @@ void	ft_think(t_philo *p)
 {
 	p->state = THINKING;
 	ft_printmsg(p, "is thinking");
+	ft_usleep(10, p);
 }
 
 void	*ft_thread(void *philo)
