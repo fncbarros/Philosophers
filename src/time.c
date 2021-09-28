@@ -40,10 +40,12 @@ void	ft_usleep(int time, t_philo *p)
 	curr = ft_gettime();
 	while (ft_gettime() - curr <= time)
 	{
-		if (p->timings.dead_time < elaps_time(p->last_meal))
+		if (p->timings.dead_time < elaps_time(p->last_meal)
+			&& p->state != EATING)
 		{
 			p->state = DEAD;
 			return ;
 		}
+		usleep(1000);
 	}
 }

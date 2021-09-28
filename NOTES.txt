@@ -272,3 +272,27 @@ long long	elaps_time_tv(t_tv init_time)
 	}
 	else if (!(*p->someone_died && p->state != DEAD))
 	...*/
+
+/*
+void	*ft_thread(void *philo)
+{
+	t_philo				*p;
+
+	p = (t_philo *)philo;
+	while (not_dead(p) && !*p->err)
+	{
+		if (p->state == THINKING)
+		{
+			if (p->timings.num_meals
+				&& p->meals_eaten >= p->timings.num_meals)
+				break ;
+			ft_eat(p);
+		}
+		else if (p->state == EATING)
+			ft_sleep(p);
+		else if (p->state == SLEEPING)
+			ft_think(p);
+	}
+	return (NULL);
+}
+*/

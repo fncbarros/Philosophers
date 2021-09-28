@@ -25,9 +25,9 @@ static t_philo	*init_philo(t_params *params, int i)
 	}
 	while (++i < params->philo_num)
 	{
-		p[i].N = i + 1;
+		p[i].n = i + 1;
 		p[i].timings = params->timings;
-		p[i].meals_eaten = 0;
+		p[i].meals_eaten = params->timings.num_meals;
 		params->fork[i].is_taken = 0;
 		p[i].r_fork = &params->fork[i];
 		p[i].l_fork = &params->fork[(i + 1) % params->philo_num];
@@ -36,8 +36,6 @@ static t_philo	*init_philo(t_params *params, int i)
 		p[i].someone_died = &params->someone_died;
 		p[i].err = &params->retnum;
 	}
-	if (i == 1)
-		p[0].l_fork = 0;
 	return (p);
 }
 
@@ -54,7 +52,7 @@ t_philo	*init_structs(char **argv, t_params *params)
 	if (argv[5])
 		params->timings.num_meals = (int)ft_atoll(argv[5]);
 	else
-		params->timings.num_meals = 0;
+		params->timings.num_meals = -1;
 	params->fork = calloc(params->philo_num, sizeof(t_fork));
 	if (!params->fork)
 		return (NULL);

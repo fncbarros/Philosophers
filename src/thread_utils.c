@@ -13,29 +13,20 @@
 #include "../inc/philo.h"
 
 bool	not_dead(t_philo *p)
-/*				  Dead			Not dead
+/*				  Dead			not dead
 				 ______		   __________
 Someone died |    10us	 		 ret 0
 			    to print
-Nobody died	 | print death 		 ret 1
+nobody died	 | print death 		 ret 1
 */
 {
-	if (p->timings.dead_time < elaps_time(p->last_meal))
+	if ((p->timings.dead_time < elaps_time(p->last_meal)
+			&& p->state != EATING) || *p->someone_died)
 	{
 		p->state = DEAD;
 		ft_printmsg(p, "died");
 		return (0);
 	}
-	if (pthread_mutex_lock(p->deathlock))
-		return (set_error(p->err, 8));
-	if (*p->someone_died)
-	{
-		if (pthread_mutex_unlock(p->deathlock))
-			return (set_error(p->err, 8));
-		return (0);
-	}
-	if (pthread_mutex_unlock(p->deathlock))
-		return (set_error(p->err, 8));
 	return (1);
 }
 
@@ -50,20 +41,21 @@ bool	ft_printmsg(t_philo *p, char *msg)
 		return (set_error(p->err, 8));
 	if (*p->someone_died)
 	{
+		p->state = DEAD;
 		if (pthread_mutex_unlock(p->printlock))
 			return (set_error(p->err, 8));
 		return (0);
 	}
-	if (!*p->someone_died && p->state == DEAD)
+	else if (!*p->someone_died && p->state == DEAD)
 		*p->someone_died = ft_gettime();
-	printf("%lld %d %s\n", time, p->N, msg);
+	printf("%lld %d %s\n", time, p->n, msg);
 	if (pthread_mutex_unlock(p->printlock))
 		return (set_error(p->err, 8));
 	return (1);
 }
 
 bool	try_get_fork(t_fork *f, int *err)
-/*MISSING ERROR CHECKING*/
+/*MISSInG ERROR CHECKInG*/
 {
 	if (pthread_mutex_lock(&f->lock))
 		return (set_error(err, 8));
@@ -92,8 +84,12 @@ bool	release_fork(t_fork *f, int *err)
 
 bool	ft_take_forks(t_philo *p)
 {
-	if (!p->l_fork)
+	if (p->l_fork == p->r_fork)
+	{
+		ft_printmsg(p, "has taken a fork");
+		ft_usleep(p->timings.dead_time + 100, p);
 		return (0);
+	}
 	if (try_get_fork(p->r_fork, p->err))
 	{
 		if (try_get_fork(p->l_fork, p->err))

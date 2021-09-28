@@ -57,7 +57,7 @@ typedef struct s_fork
 
 typedef struct s_philo
 {
-	int				N;
+	int				n;
 	pthread_t		th;
 	t_philo_state	state;
 	long long		last_meal;
